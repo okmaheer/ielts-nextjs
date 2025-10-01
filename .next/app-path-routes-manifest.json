@@ -1,0 +1,22 @@
+{
+  "/favicon.ico/route": "/favicon.ico",
+  "/_not-found/page": "/_not-found",
+  "/(admin)/(others-pages)/(chart)/bar-chart/page": "/bar-chart",
+  "/(admin)/(others-pages)/(forms)/form-elements/page": "/form-elements",
+  "/(admin)/(others-pages)/(tables)/basic-tables/page": "/basic-tables",
+  "/(admin)/(others-pages)/calendar/page": "/calendar",
+  "/(admin)/(others-pages)/(chart)/line-chart/page": "/line-chart",
+  "/(admin)/(ui-elements)/alerts/page": "/alerts",
+  "/(admin)/(others-pages)/blank/page": "/blank",
+  "/(admin)/(ui-elements)/images/page": "/images",
+  "/(admin)/(others-pages)/profile/page": "/profile",
+  "/(admin)/(ui-elements)/videos/page": "/videos",
+  "/(admin)/(ui-elements)/avatars/page": "/avatars",
+  "/(admin)/(ui-elements)/modals/page": "/modals",
+  "/(admin)/page": "/",
+  "/(admin)/(ui-elements)/buttons/page": "/buttons",
+  "/(admin)/(ui-elements)/badge/page": "/badge",
+  "/(full-width-pages)/(error-pages)/error-404/page": "/error-404",
+  "/(full-width-pages)/(auth)/signin/page": "/signin",
+  "/(full-width-pages)/(auth)/signup/page": "/signup"
+}
