@@ -1,4 +1,4 @@
-// File: /Users/maheerakbar/projects/nextjs-app/src/app/(full-width-pages)/(error-pages)/error-404/page.tsx
+// File: /Users/maheerakbar/projects/ielts-nextjs/frontend/src/app/(full-width-pages)/(error-pages)/error-404/page.tsx
 import * as entry from '../../../../../../src/app/(full-width-pages)/(error-pages)/error-404/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

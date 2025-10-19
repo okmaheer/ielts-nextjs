@@ -57,7 +57,13 @@
       "dangerouslyAllowSVG": false,
       "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
       "contentDispositionType": "attachment",
-      "remotePatterns": [],
+      "remotePatterns": [
+        {
+          "protocol": "https",
+          "hostname": "lh3.googleusercontent.com",
+          "pathname": "/**"
+        }
+      ],
       "unoptimized": false
     },
     "devIndicators": {
@@ -95,7 +101,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/Users/maheerakbar/projects/nextjs-app",
+    "outputFileTracingRoot": "/Users/maheerakbar/projects/ielts-nextjs/frontend",
     "allowedDevOrigins": [],
     "experimental": {
       "allowedDevOrigins": [],
@@ -175,7 +181,7 @@
       "forceSwcTransforms": false,
       "largePageDataBytes": 128000,
       "turbo": {
-        "root": "/Users/maheerakbar/projects/nextjs-app"
+        "root": "/Users/maheerakbar/projects/ielts-nextjs/frontend"
       },
       "typedRoutes": false,
       "typedEnv": false,
@@ -281,7 +287,7 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.ts"
   },
-  "appDir": "/Users/maheerakbar/projects/nextjs-app",
+  "appDir": "/Users/maheerakbar/projects/ielts-nextjs/frontend",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",

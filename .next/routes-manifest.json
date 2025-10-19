@@ -34,6 +34,12 @@
       "namedRegex": "^/alerts(?:/)?$"
     },
     {
+      "page": "/auth/callback",
+      "regex": "^/auth/callback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/callback(?:/)?$"
+    },
+    {
       "page": "/avatars",
       "regex": "^/avatars(?:/)?$",
       "routeKeys": {},
