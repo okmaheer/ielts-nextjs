@@ -7,7 +7,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import AuthGuard from '@/components/auth/AuthGuard';
 
 const outfit = Outfit({
-  subsets: ["latin"],
+  subsets: ['latin'],
 });
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
-"use client";
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+'use client';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 type User = {
   id: string;
@@ -25,7 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
@@ -61,27 +61,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const loadUserData = () => {
       try {
         // Try to get from cookies first (for middleware)
-        const cookieToken = getCookie("authToken");
-        
+        const cookieToken = getCookie('authToken');
+
         // Fallback to localStorage
-        const storedToken = cookieToken || localStorage.getItem("authToken");
-        const storedUser = localStorage.getItem("user");
+        const storedToken = cookieToken || localStorage.getItem('authToken');
+        const storedUser = localStorage.getItem('user');
 
         if (storedToken && storedUser) {
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
-          
+
           // Ensure cookie is set if it's not
           if (!cookieToken) {
-            setCookie("authToken", storedToken);
+            setCookie('authToken', storedToken);
           }
         }
       } catch (error) {
-        console.error("Error loading user data:", error);
+        console.error('Error loading user data:', error);
         // Clear corrupted data
-        deleteCookie("authToken");
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
+        deleteCookie('authToken');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
       } finally {
         setIsLoading(false);
       }
@@ -94,24 +94,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = (authToken: string, userData: User) => {
     setToken(authToken);
     setUser(userData);
-    
+
     // Store in both cookie and localStorage
-    setCookie("authToken", authToken, 7); // 7 days
-    localStorage.setItem("authToken", authToken);
-    localStorage.setItem("user", JSON.stringify(userData));
+    setCookie('authToken', authToken, 7); // 7 days
+    localStorage.setItem('authToken', authToken);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   // Logout function
   const logout = () => {
     setToken(null);
     setUser(null);
-    
+
     // Clear both cookie and localStorage
-    deleteCookie("authToken");
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
-    
-    router.push("/signin");
+    deleteCookie('authToken');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+
+    router.push('/signin');
   };
 
   // Update user data
@@ -119,7 +119,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (user) {
       const updatedUser = { ...user, ...userData };
       setUser(updatedUser);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem('user', JSON.stringify(updatedUser));
     }
   };
 

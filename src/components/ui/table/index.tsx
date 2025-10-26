@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
 // Props for Table
 interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
@@ -6,7 +6,8 @@ interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
 }
 
 // Props for TableHeader
-interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement> {
+interface TableHeaderProps
+  extends React.HTMLAttributes<HTMLTableSectionElement> {
   children: ReactNode;
 }
 
@@ -27,7 +28,7 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
 }
 
 // Table Component
-const Table: React.FC<TableProps> = ({ children, className = "", ...rest }) => {
+const Table: React.FC<TableProps> = ({ children, className = '', ...rest }) => {
   return (
     <table className={`min-w-full ${className}`} {...rest}>
       {children}
@@ -36,7 +37,11 @@ const Table: React.FC<TableProps> = ({ children, className = "", ...rest }) => {
 };
 
 // TableHeader Component
-const TableHeader: React.FC<TableHeaderProps> = ({ children, className = "", ...rest }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({
+  children,
+  className = '',
+  ...rest
+}) => {
   return (
     <thead className={className} {...rest}>
       {children}
@@ -45,7 +50,11 @@ const TableHeader: React.FC<TableHeaderProps> = ({ children, className = "", ...
 };
 
 // TableBody Component
-const TableBody: React.FC<TableBodyProps> = ({ children, className = "", ...rest }) => {
+const TableBody: React.FC<TableBodyProps> = ({
+  children,
+  className = '',
+  ...rest
+}) => {
   return (
     <tbody className={className} {...rest}>
       {children}
@@ -54,7 +63,11 @@ const TableBody: React.FC<TableBodyProps> = ({ children, className = "", ...rest
 };
 
 // TableRow Component
-const TableRow: React.FC<TableRowProps> = ({ children, className = "", ...rest }) => {
+const TableRow: React.FC<TableRowProps> = ({
+  children,
+  className = '',
+  ...rest
+}) => {
   return (
     <tr className={className} {...rest}>
       {children}
@@ -66,11 +79,11 @@ const TableRow: React.FC<TableRowProps> = ({ children, className = "", ...rest }
 const TableCell: React.FC<TableCellProps> = ({
   children,
   isHeader = false,
-  className = "",
+  className = '',
   ...rest
 }) => {
-  const CellTag = isHeader ? "th" : "td";
-  
+  const CellTag = isHeader ? 'th' : 'td';
+
   return (
     <CellTag className={className} {...rest}>
       {children}

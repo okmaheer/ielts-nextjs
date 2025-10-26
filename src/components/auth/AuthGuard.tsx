@@ -1,5 +1,5 @@
-"use client";
-import { useAuth } from "@/context/AuthContext";
+'use client';
+import { useAuth } from '@/context/AuthContext';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isLoading } = useAuth();
@@ -15,6 +15,5 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  
   return <>{children}</>;
 }

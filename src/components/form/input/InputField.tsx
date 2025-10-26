@@ -1,7 +1,7 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
 interface InputProps {
-  type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
+  type?: 'text' | 'number' | 'email' | 'password' | 'date' | 'time' | string;
   id?: string;
   name?: string;
   placeholder?: string;
@@ -19,14 +19,14 @@ interface InputProps {
 }
 
 const Input: FC<InputProps> = ({
-  type = "text",
+  type = 'text',
   id,
   name,
   placeholder,
   value,
   defaultValue,
   onChange,
-  className = "",
+  className = '',
   min,
   max,
   step,
@@ -50,9 +50,8 @@ const Input: FC<InputProps> = ({
   }
 
   // Use controlled component if value is provided, otherwise uncontrolled with defaultValue
-  const inputProps = value !== undefined 
-    ? { value, onChange } 
-    : { defaultValue, onChange };
+  const inputProps =
+    value !== undefined ? { value, onChange } : { defaultValue, onChange };
 
   return (
     <div className="relative">
@@ -74,10 +73,10 @@ const Input: FC<InputProps> = ({
         <p
           className={`mt-1.5 text-xs ${
             error
-              ? "text-error-500"
+              ? 'text-error-500'
               : success
-              ? "text-success-500"
-              : "text-gray-500"
+                ? 'text-success-500'
+                : 'text-gray-500'
           }`}
         >
           {hint}

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface SelectOption {
   value: string;
@@ -17,10 +17,10 @@ interface SelectProps {
 
 const Select: React.FC<SelectProps> = ({
   options,
-  value = "",
-  placeholder = "Select an option",
+  value = '',
+  placeholder = 'Select an option',
   onChange,
-  className = "",
+  className = '',
   disabled = false,
   name,
 }) => {
@@ -43,7 +43,7 @@ const Select: React.FC<SelectProps> = ({
           {placeholder}
         </option>
       )}
-      {options.map((option) => (
+      {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>

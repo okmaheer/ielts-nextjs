@@ -1,22 +1,26 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Badge from "../ui/badge/Badge";
-import Button from "../ui/button/Button";
-import Input from "../form/input/InputField";
-import Pagination from "./Pagination";
-import UserFormModal from "./UserFormModal";
-import { useModal } from "@/hooks/useModal";
-import { userService, type User, type UserFilters } from "../../../lib/services/userService";
-import { Pencil, Trash2, Plus, Search } from "lucide-react";
-import { toast } from "react-hot-toast";
+} from '../ui/table';
+import Badge from '../ui/badge/Badge';
+import Button from '../ui/button/Button';
+import Input from '../form/input/InputField';
+import Pagination from './Pagination';
+import UserFormModal from './UserFormModal';
+import { useModal } from '@/hooks/useModal';
+import {
+  userService,
+  type User,
+  type UserFilters,
+} from '../../../lib/services/userService';
+import { Pencil, Trash2, Plus, Search } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function UsersList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -24,10 +28,10 @@ export default function UsersList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [perPage] = useState(10);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
 
   const { isOpen, openModal, closeModal } = useModal();
 
@@ -42,8 +46,9 @@ export default function UsersList() {
       setTotalPages(response.last_page);
       setTotalUsers(response.total);
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to Fetch Users";
-      console.error("Failed to Fetch Users:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to Fetch Users';
+      console.error('Failed to Fetch Users:', error);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -77,14 +82,14 @@ export default function UsersList() {
   // Open create modal
   const handleCreate = () => {
     setSelectedUser(null);
-    setModalMode("create");
+    setModalMode('create');
     openModal();
   };
 
   // Open edit modal
   const handleEdit = (user: User) => {
     setSelectedUser(user);
-    setModalMode("edit");
+    setModalMode('edit');
     openModal();
   };
 
@@ -94,7 +99,7 @@ export default function UsersList() {
 
     try {
       await userService.deleteUser(id);
-      toast.success("User deleted successfully");
+      toast.success('User deleted successfully');
       // Refresh the list
       fetchUsers({
         page: currentPage,
@@ -102,8 +107,9 @@ export default function UsersList() {
         search: search || undefined,
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to delete user";
-      console.error("Failed to delte user:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to delete user';
+      console.error('Failed to delte user:', error);
       toast.error(errorMessage);
     }
   };
@@ -134,7 +140,7 @@ export default function UsersList() {
               type="text"
               placeholder="Search users..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               className="w-64 pr-12"
             />
             <Button
@@ -218,7 +224,7 @@ export default function UsersList() {
                   </TableCell>
                 </TableRow>
               ) : (
-                users.map((user) => (
+                users.map(user => (
                   <TableRow key={user.id.toString()}>
                     <TableCell className="px-5 py-4 text-start">
                       <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
@@ -235,14 +241,14 @@ export default function UsersList() {
                       <Badge
                         size="sm"
                         color={
-                          user.status === 1 || user.status === "1"
-                            ? "success"
-                            : "warning"
+                          user.status === 1 || user.status === '1'
+                            ? 'success'
+                            : 'warning'
                         }
                       >
-                        {user.status === 1 || user.status === "1"
-                          ? "Active"
-                          : "Inactive"}
+                        {user.status === 1 || user.status === '1'
+                          ? 'Active'
+                          : 'Inactive'}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start">
@@ -261,7 +267,9 @@ export default function UsersList() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDelete(Number(user.id), user.name)}
+                          onClick={() =>
+                            handleDelete(Number(user.id), user.name)
+                          }
                           className="!w-8 !h-8 !p-0 !min-w-0 hover:bg-red-500 hover:text-white hover:border-red-500"
                         >
                           <Trash2 size={16} />
