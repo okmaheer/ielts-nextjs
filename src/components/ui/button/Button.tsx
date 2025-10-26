@@ -1,14 +1,11 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, ButtonHTMLAttributes } from "react";
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode; // Button text or content
   size?: "sm" | "md"; // Button size
   variant?: "primary" | "outline"; // Button variant
   startIcon?: ReactNode; // Icon before the text
   endIcon?: ReactNode; // Icon after the text
-  onClick?: () => void; // Click handler
-  disabled?: boolean; // Disabled state
-  className?: string; // Disabled state
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,9 +14,9 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   startIcon,
   endIcon,
-  onClick,
   className = "",
-  disabled = false,
+  type = "button",
+  ...rest
 }) => {
   // Size Classes
   const sizeClasses = {
@@ -37,17 +34,15 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={`inline-flex items-center justify-center font-medium gap-2 rounded-lg transition ${className} ${
+      type={type}
+      className={`inline-flex items-center justify-center font-medium gap-2 rounded-lg transition ${
         sizeClasses[size]
-      } ${variantClasses[variant]} ${
-        disabled ? "cursor-not-allowed opacity-50" : ""
-      }`}
-      onClick={onClick}
-      disabled={disabled}
+      } ${variantClasses[variant]} ${className}`}
+      {...rest}
     >
-      {startIcon && <span className="flex items-center">{startIcon}</span>}
+      {startIcon}
       {children}
-      {endIcon && <span className="flex items-center">{endIcon}</span>}
+      {endIcon}
     </button>
   );
 };

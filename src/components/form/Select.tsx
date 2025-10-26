@@ -1,59 +1,50 @@
-import React, { useState } from "react";
+import React from "react";
 
-interface Option {
+interface SelectOption {
   value: string;
   label: string;
 }
 
 interface SelectProps {
-  options: Option[];
+  options: SelectOption[];
+  value?: string;
   placeholder?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   className?: string;
-  defaultValue?: string;
+  disabled?: boolean;
+  name?: string;
 }
 
 const Select: React.FC<SelectProps> = ({
   options,
+  value = "",
   placeholder = "Select an option",
   onChange,
   className = "",
-  defaultValue = "",
+  disabled = false,
+  name,
 }) => {
-  // Manage the selected value
-  const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
-
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setSelectedValue(value);
-    onChange(value); // Trigger parent handler
+    if (onChange) {
+      onChange(e.target.value);
+    }
   };
 
   return (
     <select
-      className={`h-11 w-full appearance-none rounded-lg border border-gray-300  px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${
-        selectedValue
-          ? "text-gray-800 dark:text-white/90"
-          : "text-gray-400 dark:text-gray-400"
-      } ${className}`}
-      value={selectedValue}
+      name={name}
+      value={value}
       onChange={handleChange}
+      disabled={disabled}
+      className={`w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 outline-none transition-all duration-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 dark:border-white/[0.05] dark:bg-white/[0.03] dark:text-white/90 dark:focus:border-brand-500 dark:disabled:bg-white/[0.02] ${className}`}
     >
-      {/* Placeholder option */}
-      <option
-        value=""
-        disabled
-        className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
-      >
-        {placeholder}
-      </option>
-      {/* Map over options */}
+      {placeholder && (
+        <option value="" disabled>
+          {placeholder}
+        </option>
+      )}
       {options.map((option) => (
-        <option
-          key={option.value}
-          value={option.value}
-          className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
-        >
+        <option key={option.value} value={option.value}>
           {option.label}
         </option>
       ))}

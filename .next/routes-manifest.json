@@ -136,6 +136,12 @@
       "namedRegex": "^/signup(?:/)?$"
     },
     {
+      "page": "/users",
+      "regex": "^/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/users(?:/)?$"
+    },
+    {
       "page": "/videos",
       "regex": "^/videos(?:/)?$",
       "routeKeys": {},
