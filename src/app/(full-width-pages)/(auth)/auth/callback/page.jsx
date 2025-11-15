@@ -32,7 +32,7 @@ export default function AuthCallback() {
         login(token, userData);
 
         // Redirect to dashboard
-        router.push('/');
+        router.push('/dashboard');
       } catch (err) {
         console.error('Error parsing user data:', err);
         router.push('/signin?error=invalid_data');

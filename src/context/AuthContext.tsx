@@ -8,6 +8,8 @@ type User = {
   email: string;
   authProvider: string;
   profilePicture?: string;
+  roles: string[];
+  isAdmin: boolean;
 };
 
 type AuthContextType = {
@@ -69,7 +71,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (storedToken && storedUser) {
           setToken(storedToken);
-          setUser(JSON.parse(storedUser));
+          const parsedUser = JSON.parse(storedUser);
+
+          if (!parsedUser.roles) {
+            parsedUser.roles = [];
+          }
+          if (parsedUser.isAdmin === undefined) {
+            parsedUser.isAdmin = parsedUser.roles.includes('Admin');
+          }
+
+          setUser(parsedUser);
 
           // Ensure cookie is set if it's not
           if (!cookieToken) {

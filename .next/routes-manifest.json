@@ -13,7 +13,16 @@
     }
   ],
   "headers": [],
-  "dynamicRoutes": [],
+  "dynamicRoutes": [
+    {
+      "page": "/take-writing-tests/academic/[testId]",
+      "regex": "^/take\\-writing\\-tests/academic/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/academic/(?<nxtPtestId>[^/]+?)(?:/)?$"
+    }
+  ],
   "staticRoutes": [
     {
       "page": "/",
@@ -38,6 +47,12 @@
       "regex": "^/auth/callback(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/auth/callback(?:/)?$"
+    },
+    {
+      "page": "/auth/login",
+      "regex": "^/auth/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/login(?:/)?$"
     },
     {
       "page": "/avatars",
@@ -80,6 +95,12 @@
       "regex": "^/calendar(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/calendar(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
     },
     {
       "page": "/error-404",
@@ -136,6 +157,18 @@
       "namedRegex": "^/signup(?:/)?$"
     },
     {
+      "page": "/take-writing-tests/academic",
+      "regex": "^/take\\-writing\\-tests/academic(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/take\\-writing\\-tests/academic(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/general-training",
+      "regex": "^/take\\-writing\\-tests/general\\-training(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/take\\-writing\\-tests/general\\-training(?:/)?$"
+    },
+    {
       "page": "/users",
       "regex": "^/users(?:/)?$",
       "routeKeys": {},
@@ -146,6 +179,12 @@
       "regex": "^/videos(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/videos(?:/)?$"
+    },
+    {
+      "page": "/writing-test-instructions",
+      "regex": "^/writing\\-test\\-instructions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/writing\\-test\\-instructions(?:/)?$"
     }
   ],
   "dataRoutes": [],

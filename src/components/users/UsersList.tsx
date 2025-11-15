@@ -58,7 +58,7 @@ export default function UsersList() {
   // Initial load
   useEffect(() => {
     fetchUsers({ page: 1, per_page: perPage });
-  }, []);
+  }, [perPage]);
 
   // Handle page change
   const handlePageChange = (page: number) => {
