@@ -16,11 +16,12 @@ export interface TestSubmission {
 export interface WritingTest {
   id: number;
   name: string;
-  description: string;
+  title?: string; // Alias for name
+  description?: string;
   type: number;
   category: number;
-  duration: number;
-  total_marks: number;
+  duration?: number;
+  total_marks?: number;
   created_at: string;
   updated_at: string;
   submission?: TestSubmission | null;

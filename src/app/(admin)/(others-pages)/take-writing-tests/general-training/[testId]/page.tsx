@@ -84,8 +84,8 @@ export default function TakeWritingTestPage() {
         const data = await writingTestService.getTestDetails(Number(testId));
         setTestData(data);
 
-        // Convert duration from minutes to seconds
-        const durationInSeconds = data.test.duration * 60;
+        // Always set timer to 60 minutes (3600 seconds)
+        const durationInSeconds = 3600;
 
         // Check localStorage for existing session
         const savedSession = localStorage.getItem(storageKey);
@@ -265,7 +265,7 @@ export default function TakeWritingTestPage() {
     try {
       const payload = {
         test_id: testData.test.id,
-        time_taken: testData.test.duration * 60 - timeRemaining,
+        time_taken: 3600 - timeRemaining, // 60 minutes in seconds
         answers: testData.questions.map(q => ({
           task_number: q.task_number,
           answer_text: answers[q.task_number] || '',

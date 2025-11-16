@@ -221,7 +221,7 @@ export default function TakeWritingTestPage() {
     try {
       const payload = {
         test_id: testData.test.id,
-        time_taken: testData.test.duration * 60 - timeRemaining,
+        time_taken: 3600 - timeRemaining, // 60 minutes in seconds
         answers: testData.questions.map(q => ({
           task_number: q.task_number,
           answer_text: answers[q.task_number] || '',
