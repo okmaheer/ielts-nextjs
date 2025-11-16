@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { BookOpen, FileText, AlertCircle, CheckCircle } from 'lucide-react';
 import {
@@ -20,7 +20,7 @@ export default function TakeWritingTestPage() {
 
   const [currentTask, setCurrentTask] = useState<number>(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [timeRemaining, setTimeRemaining] = useState<number>(3600);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [fontSize, setFontSize] = useState<number>(16);
   const [showSettings, setShowSettings] = useState<boolean>(false);
@@ -30,7 +30,10 @@ export default function TakeWritingTestPage() {
   const [testData, setTestData] = useState<WritingTestWithQuestions | null>(
     null
   );
-  const [startTime, setStartTime] = useState<number>(0);
+
+  // Timer tracking
+  const hasReachedZeroRef = useRef<boolean>(false); // Track if timer has reached 0
+  const timerStartedRef = useRef<boolean>(false); // Track if timer has started
 
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -58,17 +61,6 @@ export default function TakeWritingTestPage() {
           return;
         }
 
-        // Optional: Verify token with backend
-        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
-        //   credentials: 'include'
-        // });
-        // if (response.ok) {
-        //   setIsAuthenticated(true);
-        // } else {
-        //   setIsAuthenticated(false);
-        // }
-
-        // For now, just check if cookie exists
         setIsAuthenticated(true);
       } catch (err) {
         console.error('Auth check failed:', err);
@@ -91,8 +83,9 @@ export default function TakeWritingTestPage() {
         setError(null);
         const data = await writingTestService.getTestDetails(Number(testId));
         setTestData(data);
-        setTimeRemaining(data.test.duration);
-        setStartTime(data.test.duration);
+
+        // Always set timer to 60 minutes (3600 seconds)
+        setTimeRemaining(3600);
       } catch (err) {
         console.error('Error fetching test:', err);
         setError('Failed to load test. Please try again.');
@@ -106,23 +99,43 @@ export default function TakeWritingTestPage() {
     }
   }, [testId, isAuthenticated, isCheckingAuth]);
 
-  // Timer effect - Only starts when data is loaded AND authenticated
+  // Timer countdown - runs every second
   useEffect(() => {
-    if (!testData || isLoading || !isAuthenticated) return;
+    // Don't start timer if: no data, still loading, not authenticated, or timer is 0
+    if (!testData || isLoading || !isAuthenticated || timeRemaining === 0)
+      return;
+
+    // Mark timer as started
+    if (!timerStartedRef.current && timeRemaining > 0) {
+      timerStartedRef.current = true;
+    }
 
     const timer = setInterval(() => {
       setTimeRemaining(prev => {
-        if (prev <= 1) {
-          handleAutoSubmit();
+        const newTime = prev - 1;
+
+        // When timer reaches 0, submit the test
+        if (newTime <= 0) {
           clearInterval(timer);
+
+          // Only submit once using ref
+          if (!hasReachedZeroRef.current) {
+            hasReachedZeroRef.current = true;
+            console.log('Timer reached 0 - Submitting test...');
+            // Auto-submit when timer reaches 0
+            submitTest();
+          }
+
           return 0;
         }
-        return prev - 1;
+
+        return newTime;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [testData, isLoading, isAuthenticated]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [testData, isLoading, isAuthenticated, timeRemaining]);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -185,12 +198,20 @@ export default function TakeWritingTestPage() {
     };
   };
 
-  const handleAutoSubmit = async () => {
-    console.log('Auto-submitting test...');
-    await submitTest();
-  };
-
   const handleSubmit = () => {
+    // Validate that all tasks meet the 50% minimum word count requirement
+    for (const question of testData?.questions || []) {
+      const minWords = Math.ceil(question.word_limit * 0.5);
+      const wordCount = countWords(answers[question.task_number] || '');
+
+      if (wordCount < minWords) {
+        alert(
+          `Task ${question.task_number} must have at least ${minWords} words (50% of ${question.word_limit}). Current: ${wordCount} words.`
+        );
+        return;
+      }
+    }
+
     setShowSubmitModal(true);
   };
 
@@ -200,7 +221,7 @@ export default function TakeWritingTestPage() {
     try {
       const payload = {
         test_id: testData.test.id,
-        time_taken: startTime - timeRemaining,
+        time_taken: testData.test.duration * 60 - timeRemaining,
         answers: testData.questions.map(q => ({
           task_number: q.task_number,
           answer_text: answers[q.task_number] || '',
@@ -208,9 +229,10 @@ export default function TakeWritingTestPage() {
         })),
       };
 
-      await writingTestService.submitWritingTest(payload);
-      console.log('Test submitted successfully!');
-      router.push('/dashboard');
+      const result = await writingTestService.submitWritingTest(payload);
+      console.log('Test submitted successfully!', result);
+      // Redirect to results page
+      router.push(`/writing-test-results/${result.data.submission_id}`);
     } catch (err) {
       console.error('Error submitting test:', err);
       alert('Failed to submit test. Please try again.');
@@ -295,7 +317,8 @@ export default function TakeWritingTestPage() {
   );
   const currentAnswer = answers[currentTask] || '';
   const currentWordCount = countWords(currentAnswer);
-  const minWords = currentTask === 1 ? 150 : 250;
+  // Calculate minimum words as 50% of word_limit
+  const minWords = Math.ceil((currentQuestion?.word_limit || 0) * 0.5);
   const wordCountStatus = getWordCountStatus(
     currentWordCount,
     minWords,
@@ -414,7 +437,7 @@ export default function TakeWritingTestPage() {
                     handleAnswerChange(e.target.value, currentTask)
                   }
                   style={{ fontSize: `${fontSize}px` }}
-                  className={`flex-1 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border-2 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-[#06BBCC] focus:border-transparent resize-none transition-all`}
+                  className={`flex-1 ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border-2 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-[#06BBCC] focus:border-[#06BBCC] resize-none transition-all`}
                   placeholder="Start typing your answer here..."
                 />
               </div>

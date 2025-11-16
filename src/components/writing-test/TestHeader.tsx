@@ -38,6 +38,10 @@ export default function TestHeader({
   onLogout,
 }: TestHeaderProps) {
   const formatTime = (seconds: number): string => {
+    // Handle invalid values (NaN, undefined, null, or negative)
+    if (isNaN(seconds) || seconds == null || seconds < 0) {
+      return '00:00';
+    }
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;

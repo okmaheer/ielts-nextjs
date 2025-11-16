@@ -10,6 +10,8 @@ import {
   TableIcon,
   UserCircleIcon,
   TaskIcon,
+  CheckCircleIcon,
+  DocsIcon,
 } from '@/icons/index';
 
 export type NavItem = {
@@ -46,6 +48,12 @@ export const navItems: NavItem[] = [
     roles: ['Admin'], // Only Admin can see
   },
   {
+    icon: React.createElement(DocsIcon),
+    name: 'Expert Review Requests',
+    path: '/admin/expert-reviews',
+    roles: ['Admin'], // Only Admin can see
+  },
+  {
     icon: React.createElement(TaskIcon),
     name: 'Take Writing Tests',
     roles: ['Admin', 'User'], // Visible to all
@@ -63,6 +71,18 @@ export const navItems: NavItem[] = [
         roles: ['Admin', 'User'], // Visible to all
       },
     ],
+  },
+  {
+    icon: React.createElement(CheckCircleIcon),
+    name: 'Test Results',
+    path: '/my-test-results',
+    roles: [], // Visible to all
+  },
+  {
+    icon: React.createElement(DocsIcon),
+    name: 'Expert Reviews',
+    path: '/my-expert-reviews',
+    roles: ['Admin', 'User'], // Visible to authenticated users
   },
   {
     icon: React.createElement(UserCircleIcon),

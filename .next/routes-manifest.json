@@ -15,12 +15,52 @@
   "headers": [],
   "dynamicRoutes": [
     {
+      "page": "/admin/expert-reviews/[requestId]",
+      "regex": "^/admin/expert\\-reviews/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPrequestId": "nxtPrequestId"
+      },
+      "namedRegex": "^/admin/expert\\-reviews/(?<nxtPrequestId>[^/]+?)(?:/)?$"
+    },
+    {
       "page": "/take-writing-tests/academic/[testId]",
       "regex": "^/take\\-writing\\-tests/academic/([^/]+?)(?:/)?$",
       "routeKeys": {
         "nxtPtestId": "nxtPtestId"
       },
       "namedRegex": "^/take\\-writing\\-tests/academic/(?<nxtPtestId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/academic/[testId]/instructions",
+      "regex": "^/take\\-writing\\-tests/academic/([^/]+?)/instructions(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/academic/(?<nxtPtestId>[^/]+?)/instructions(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/general-training/[testId]",
+      "regex": "^/take\\-writing\\-tests/general\\-training/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/general\\-training/(?<nxtPtestId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/general-training/[testId]/instructions",
+      "regex": "^/take\\-writing\\-tests/general\\-training/([^/]+?)/instructions(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/general\\-training/(?<nxtPtestId>[^/]+?)/instructions(?:/)?$"
+    },
+    {
+      "page": "/writing-test-results/[submissionId]",
+      "regex": "^/writing\\-test\\-results/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPsubmissionId": "nxtPsubmissionId"
+      },
+      "namedRegex": "^/writing\\-test\\-results/(?<nxtPsubmissionId>[^/]+?)(?:/)?$"
     }
   ],
   "staticRoutes": [
@@ -35,6 +75,12 @@
       "regex": "^/_not\\-found(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin/expert-reviews",
+      "regex": "^/admin/expert\\-reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/expert\\-reviews(?:/)?$"
     },
     {
       "page": "/alerts",
@@ -137,6 +183,18 @@
       "regex": "^/modals(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/modals(?:/)?$"
+    },
+    {
+      "page": "/my-expert-reviews",
+      "regex": "^/my\\-expert\\-reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-expert\\-reviews(?:/)?$"
+    },
+    {
+      "page": "/my-test-results",
+      "regex": "^/my\\-test\\-results(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-test\\-results(?:/)?$"
     },
     {
       "page": "/profile",

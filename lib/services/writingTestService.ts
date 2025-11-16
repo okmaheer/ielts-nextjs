@@ -3,6 +3,16 @@
 import api from '../api';
 
 // Types
+export interface TestSubmission {
+  id: string;
+  overall_band_score: number;
+  task_achievement_score: number;
+  coherence_cohesion_score: number;
+  lexical_resource_score: number;
+  grammar_score: number;
+  submitted_at: string;
+}
+
 export interface WritingTest {
   id: number;
   name: string;
@@ -13,6 +23,7 @@ export interface WritingTest {
   total_marks: number;
   created_at: string;
   updated_at: string;
+  submission?: TestSubmission | null;
 }
 
 export interface WritingQuestion {
@@ -56,9 +67,55 @@ export interface SubmitWritingTestPayload {
 export interface SubmitWritingTestResponse {
   success: boolean;
   data: {
-    submission_id: number;
+    submission_id: string;
+    overall_band: number;
+    evaluation: AIEvaluation;
     message: string;
   };
+  message: string;
+}
+
+export interface AIEvaluation {
+  task1?: TaskEvaluation;
+  task2?: TaskEvaluation;
+  average_band: number;
+  tokens_used?: number;
+  estimated_cost?: string;
+}
+
+export interface TaskEvaluation {
+  task_achievement?: number; // For Task 1
+  task_response?: number; // For Task 2
+  coherence_cohesion: number;
+  lexical_resource: number;
+  grammatical_accuracy: number;
+  overall_band: number;
+  feedback: string;
+  improvements: string[];
+}
+
+export interface SubmissionDetails {
+  id: string;
+  user_id: string;
+  test_id: string;
+  task1_answer: string | null;
+  task1_word_count: number | null;
+  task2_answer: string | null;
+  task2_word_count: number | null;
+  time_taken: number;
+  ai_evaluation: AIEvaluation;
+  expert_score: number | null;
+  expert_feedback: string | null;
+  expert_feedback_sent: boolean;
+  overall_band_score: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubmissionDetailsResponse {
+  success: boolean;
+  data: SubmissionDetails;
   message: string;
 }
 
@@ -106,5 +163,23 @@ export const writingTestService = {
       payload
     );
     return response.data;
+  },
+
+  // Get submission details by ID
+  async getSubmissionDetails(submissionId: string): Promise<SubmissionDetails> {
+    const response = await api.get<SubmissionDetailsResponse>(
+      `/take-test/writing/submission/${submissionId}`
+    );
+    return response.data.data;
+  },
+
+  // Get all user submissions
+  async getUserSubmissions(): Promise<SubmissionDetails[]> {
+    const response = await api.get<{
+      success: boolean;
+      data: SubmissionDetails[];
+      message: string;
+    }>('/take-test/writing/submissions');
+    return response.data.data;
   },
 };

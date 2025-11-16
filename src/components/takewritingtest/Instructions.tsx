@@ -108,7 +108,7 @@ export default function Instructions({
                 <BookOpen className="h-12 w-12" style={{ color: '#06BBCC' }} />
               </div>
               <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
-                xWelcome to IELTS {category} {testType} Test
+                Welcome to IELTS {category} {testType} Test
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
                 Please read all instructions carefully before starting the test

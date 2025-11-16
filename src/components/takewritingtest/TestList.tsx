@@ -14,8 +14,11 @@ import {
   BookOpen,
   RefreshCw,
   ArrowRight,
-  TrendingUp,
+  Clock,
   Target,
+  CheckCircle,
+  Award,
+  Eye,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -77,23 +80,8 @@ export default function TestList({ category }: TestListProps) {
     router.push(`${config.routePrefix}/${testId}/instructions`);
   };
 
-  // TODO: Remove this when backend sends real data
-  const getDummyStats = (testId: number) => {
-    const attempts = Math.floor((testId * 3) % 10) + 1;
-    const avgScore = Math.floor((testId * 17) % 40) + 60;
-    return { attempts, avgScore };
-  };
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600 dark:text-green-400';
-    if (score >= 60) return 'text-blue-600 dark:text-blue-400';
-    return 'text-amber-600 dark:text-amber-400';
-  };
-
-  const getScoreBgColor = (score: number) => {
-    if (score >= 80) return 'bg-green-50 dark:bg-green-900/20';
-    if (score >= 60) return 'bg-blue-50 dark:bg-blue-900/20';
-    return 'bg-amber-50 dark:bg-amber-900/20';
+  const handleViewResults = (submissionId: string) => {
+    router.push(`/writing-test-results/${submissionId}`);
   };
 
   return (
@@ -182,17 +170,36 @@ export default function TestList({ category }: TestListProps) {
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {tests.map(test => {
-              const stats = getDummyStats(test.id);
+              const hasSubmission =
+                test.submission !== null && test.submission !== undefined;
 
               return (
                 <div
                   key={test.id}
-                  className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/60"
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl border ${hasSubmission ? 'border-green-200 bg-green-50/50 dark:border-green-900/30 dark:bg-green-900/10' : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/60'} shadow-sm transition-all duration-300 hover:shadow-xl`}
                 >
+                  {/* Completed Badge */}
+                  {hasSubmission && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <div className="flex items-center gap-1.5 rounded-full bg-green-600 px-3 py-1.5 shadow-lg">
+                        <CheckCircle className="h-3.5 w-3.5 text-white" />
+                        <span className="text-xs font-bold text-white">
+                          Completed
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Card Header with Gradient Accent */}
-                  <div className="relative bg-gradient-to-br from-primary/5 via-primary/3 to-transparent p-6 pb-4">
-                    <div className="mb-4 inline-flex rounded-xl bg-white p-3 shadow-sm dark:bg-gray-900">
-                      <FileText className="h-6 w-6 text-primary" />
+                  <div
+                    className={`relative ${hasSubmission ? 'bg-gradient-to-br from-green-100/50 via-green-50/30 to-transparent dark:from-green-900/20 dark:via-green-900/10' : 'bg-gradient-to-br from-primary/5 via-primary/3 to-transparent'} p-6 pb-4`}
+                  >
+                    <div
+                      className={`mb-4 inline-flex rounded-xl ${hasSubmission ? 'bg-green-100 dark:bg-green-900/30' : 'bg-white dark:bg-gray-900'} p-3 shadow-sm`}
+                    >
+                      <FileText
+                        className={`h-6 w-6 ${hasSubmission ? 'text-green-600 dark:text-green-400' : 'text-primary'}`}
+                      />
                     </div>
 
                     <h3 className="mb-2 font-bold text-gray-900 text-lg leading-tight dark:text-white">
@@ -204,86 +211,144 @@ export default function TestList({ category }: TestListProps) {
                     </p>
 
                     {/* Decorative Element */}
-                    <div className="absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-primary/5 blur-2xl" />
+                    <div
+                      className={`absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full ${hasSubmission ? 'bg-green-500/10' : 'bg-primary/5'} blur-2xl`}
+                    />
                   </div>
 
-                  {/* Stats Section - Professional Layout */}
-                  <div className="flex-1 border-t border-gray-100 bg-gray-50/50 px-6 py-4 dark:border-gray-800 dark:bg-gray-900/40">
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* Attempts Stat */}
-                      <div className="flex flex-col">
-                        <div className="mb-1.5 flex items-center gap-1.5">
-                          <Target className="h-3.5 w-3.5 text-gray-400" />
-                          <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                            Attempts
+                  {/* Test Info Section */}
+                  <div
+                    className={`flex-1 border-t ${hasSubmission ? 'border-green-100 bg-green-50/30 dark:border-green-900/20 dark:bg-green-900/5' : 'border-gray-100 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/40'} px-6 py-4`}
+                  >
+                    {hasSubmission && test.submission ? (
+                      <div className="space-y-3">
+                        {/* Overall Band Score */}
+                        <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm dark:bg-gray-900/50">
+                          <div className="flex items-center gap-2">
+                            <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Overall Band
+                            </span>
+                          </div>
+                          <span className="font-bold text-green-600 text-xl dark:text-green-400">
+                            {test.submission.overall_band_score.toFixed(1)}
                           </span>
                         </div>
-                        <span className="font-bold text-2xl text-gray-900 dark:text-white">
-                          {stats.attempts}
-                        </span>
-                      </div>
 
-                      {/* Average Score Stat */}
-                      <div className="flex flex-col">
-                        <div className="mb-1.5 flex items-center gap-1.5">
-                          <TrendingUp className="h-3.5 w-3.5 text-gray-400" />
-                          <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                            Avg Score
-                          </span>
+                        {/* Score Breakdown */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-600 dark:text-gray-400">
+                              Task Achievement
+                            </span>
+                            <span className="font-semibold text-gray-900 dark:text-white">
+                              {test.submission.task_achievement_score.toFixed(
+                                1
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-600 dark:text-gray-400">
+                              Coherence & Cohesion
+                            </span>
+                            <span className="font-semibold text-gray-900 dark:text-white">
+                              {test.submission.coherence_cohesion_score.toFixed(
+                                1
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-600 dark:text-gray-400">
+                              Lexical Resource
+                            </span>
+                            <span className="font-semibold text-gray-900 dark:text-white">
+                              {test.submission.lexical_resource_score.toFixed(
+                                1
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-600 dark:text-gray-400">
+                              Grammar
+                            </span>
+                            <span className="font-semibold text-gray-900 dark:text-white">
+                              {test.submission.grammar_score.toFixed(1)}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-baseline gap-1">
-                          <span
-                            className={`font-bold text-2xl ${getScoreColor(stats.avgScore)}`}
-                          >
-                            {stats.avgScore}
-                          </span>
-                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                            %
-                          </span>
+
+                        {/* Submitted Date */}
+                        <div className="pt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+                          Submitted:{' '}
+                          {new Date(
+                            test.submission.submitted_at
+                          ).toLocaleDateString()}
                         </div>
                       </div>
-                    </div>
-
-                    {/* Score Badge */}
-                    {stats.avgScore > 0 && (
-                      <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-800">
-                        <div
-                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 ${getScoreBgColor(stats.avgScore)}`}
-                        >
-                          <div
-                            className={`h-1.5 w-1.5 rounded-full ${getScoreColor(stats.avgScore).replace('text-', 'bg-')}`}
-                          />
-                          <span
-                            className={`text-xs font-semibold ${getScoreColor(stats.avgScore)}`}
-                          >
-                            {stats.avgScore >= 80
-                              ? 'Excellent Performance'
-                              : stats.avgScore >= 60
-                                ? 'Good Progress'
-                                : 'Keep Practicing'}
+                    ) : (
+                      <div className="space-y-3">
+                        {/* Duration */}
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            60 minutes
                           </span>
+                        </div>
+
+                        {/* Tasks */}
+                        <div className="flex items-center gap-2">
+                          <Target className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            2 Writing Tasks
+                          </span>
+                        </div>
+
+                        {/* Badge */}
+                        <div className="pt-2">
+                          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5">
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                            <span className="text-xs font-semibold text-primary">
+                              AI + Expert Review
+                            </span>
+                          </div>
                         </div>
                       </div>
                     )}
                   </div>
 
                   {/* Action Button */}
-                  <div className="border-t border-gray-100 p-4 dark:border-gray-800">
-                    <Button
-                      onClick={() => handleStartTest(test.id)}
-                      variant="primary"
-                      size="sm"
-                      className="w-full group-hover:shadow-md"
-                      endIcon={
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      }
-                    >
-                      {stats.attempts > 0 ? 'Retake Test' : 'Start Test'}
-                    </Button>
+                  <div
+                    className={`border-t ${hasSubmission ? 'border-green-100 dark:border-green-900/20' : 'border-gray-100 dark:border-gray-800'} p-4`}
+                  >
+                    {hasSubmission ? (
+                      <Button
+                        onClick={() => handleViewResults(test.submission!.id)}
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-green-600 text-green-600 hover:bg-green-50 dark:border-green-400 dark:text-green-400 dark:hover:bg-green-900/20"
+                        endIcon={<Eye className="h-4 w-4" />}
+                      >
+                        View Results
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => handleStartTest(test.id)}
+                        variant="primary"
+                        size="sm"
+                        className="w-full group-hover:shadow-md"
+                        endIcon={
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        }
+                      >
+                        Start Test
+                      </Button>
+                    )}
                   </div>
 
                   {/* Subtle Hover Border */}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-primary/0 transition-all duration-300 group-hover:ring-primary/30" />
+                  <div
+                    className={`pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ${hasSubmission ? 'ring-green-500/0 group-hover:ring-green-500/30' : 'ring-primary/0 group-hover:ring-primary/30'} transition-all duration-300`}
+                  />
                 </div>
               );
             })}
@@ -315,6 +380,12 @@ export default function TestList({ category }: TestListProps) {
                 Test Guidelines
               </h4>
               <ul className="space-y-1.5 text-sm leading-relaxed text-blue-800/90 dark:text-blue-400/90">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-blue-600 dark:bg-blue-400" />
+                  <span>
+                    Each test can only be taken once - choose carefully
+                  </span>
+                </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-blue-600 dark:bg-blue-400" />
                   <span>Ensure stable internet connection before starting</span>
