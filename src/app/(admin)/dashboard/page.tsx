@@ -8,9 +8,24 @@ import RecentOrders from '@/components/ecommerce/RecentOrders';
 import DemographicCard from '@/components/ecommerce/DemographicCard';
 
 export const metadata: Metadata = {
-  title:
-    'Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template',
-  description: 'This is Next.js Home for TailAdmin Dashboard Template',
+  title: 'IELTS Writing Practice Tests | AI + Expert Review',
+  description:
+    'Master IELTS Writing with AI-powered instant feedback and expert human review. Practice Academic and General Training tests under real exam conditions.',
+  keywords: [
+    'IELTS',
+    'Writing Test',
+    'IELTS Practice',
+    'Academic Writing',
+    'General Training',
+    'AI Feedback',
+    'Expert Review',
+  ],
+  openGraph: {
+    title: 'IELTS Writing Practice Tests | AI + Expert Review',
+    description:
+      'Master IELTS Writing with AI-powered instant feedback and expert human review.',
+    type: 'website',
+  },
 };
 
 export default function Ecommerce() {

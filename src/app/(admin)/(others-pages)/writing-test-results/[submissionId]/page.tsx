@@ -149,12 +149,14 @@ export default function WritingTestResults() {
   };
 
   const getBandColor = (band: number): string => {
+    if (band === 0) return 'text-gray-500';
     if (band >= 7) return 'text-green-600';
     if (band >= 6) return 'text-yellow-600';
     return 'text-orange-600';
   };
 
   const getBandBgColor = (band: number): string => {
+    if (band === 0) return 'bg-gray-100';
     if (band >= 7) return 'bg-green-100';
     if (band >= 6) return 'bg-yellow-100';
     return 'bg-orange-100';
@@ -197,10 +199,15 @@ export default function WritingTestResults() {
     taskNum: 1 | 2,
     taskData: {
       task_achievement?: number;
+      task_achievement_details?: string;
       task_response?: number;
+      task_response_details?: string;
       coherence_cohesion?: number;
+      coherence_cohesion_details?: string;
       lexical_resource?: number;
+      lexical_resource_details?: string;
       grammatical_accuracy?: number;
+      grammatical_accuracy_details?: string;
       overall_band?: number;
       feedback?: string;
       improvements?: string[];
@@ -265,29 +272,34 @@ export default function WritingTestResults() {
                     renderCriteriaScore(
                       'Task Achievement',
                       taskData.task_achievement,
-                      `${taskKey}-achievement-expert`
+                      `${taskKey}-achievement-expert`,
+                      taskData.task_achievement_details
                     )}
                   {taskNum === 2 &&
                     taskData.task_response &&
                     renderCriteriaScore(
                       'Task Response',
                       taskData.task_response,
-                      `${taskKey}-response-expert`
+                      `${taskKey}-response-expert`,
+                      taskData.task_response_details
                     )}
                   {renderCriteriaScore(
                     'Coherence & Cohesion',
                     taskData.coherence_cohesion || 0,
-                    `${taskKey}-coherence-expert`
+                    `${taskKey}-coherence-expert`,
+                    taskData.coherence_cohesion_details
                   )}
                   {renderCriteriaScore(
                     'Lexical Resource',
                     taskData.lexical_resource || 0,
-                    `${taskKey}-lexical-expert`
+                    `${taskKey}-lexical-expert`,
+                    taskData.lexical_resource_details
                   )}
                   {renderCriteriaScore(
                     'Grammatical Range & Accuracy',
                     taskData.grammatical_accuracy || 0,
-                    `${taskKey}-grammar-expert`
+                    `${taskKey}-grammar-expert`,
+                    taskData.grammatical_accuracy_details
                   )}
                 </div>
 
@@ -395,29 +407,34 @@ export default function WritingTestResults() {
                     renderCriteriaScore(
                       'Task Achievement',
                       taskData.task_achievement,
-                      `${taskKey}-achievement`
+                      `${taskKey}-achievement`,
+                      taskData.task_achievement_details
                     )}
                   {taskNum === 2 &&
                     taskData.task_response &&
                     renderCriteriaScore(
                       'Task Response',
                       taskData.task_response,
-                      `${taskKey}-response`
+                      `${taskKey}-response`,
+                      taskData.task_response_details
                     )}
                   {renderCriteriaScore(
                     'Coherence & Cohesion',
                     taskData.coherence_cohesion,
-                    `${taskKey}-coherence`
+                    `${taskKey}-coherence`,
+                    taskData.coherence_cohesion_details
                   )}
                   {renderCriteriaScore(
                     'Lexical Resource',
                     taskData.lexical_resource,
-                    `${taskKey}-lexical`
+                    `${taskKey}-lexical`,
+                    taskData.lexical_resource_details
                   )}
                   {renderCriteriaScore(
                     'Grammatical Range & Accuracy',
                     taskData.grammatical_accuracy,
-                    `${taskKey}-grammar`
+                    `${taskKey}-grammar`,
+                    taskData.grammatical_accuracy_details
                   )}
                 </div>
 
@@ -551,11 +568,7 @@ export default function WritingTestResults() {
               AI Overall Band Score
             </h2>
             <div className="text-5xl font-bold mb-2">{overall_band_score}</div>
-            <p className="text-sm opacity-90">
-              {ai_evaluation?.task1 && ai_evaluation?.task2
-                ? `Formula: (Task 1: ${ai_evaluation.task1.overall_band} + 2 × Task 2: ${ai_evaluation.task2.overall_band}) ÷ 3`
-                : 'Based on completed task(s)'}
-            </p>
+            <p className="text-sm opacity-90"></p>
           </div>
 
           {/* Expert Score */}
@@ -567,11 +580,7 @@ export default function WritingTestResults() {
               <div className="text-5xl font-bold mb-2">
                 {submission.expert_score.toFixed(1)}
               </div>
-              <p className="text-sm opacity-90">
-                {expertEvaluation?.task1 && expertEvaluation?.task2
-                  ? `Formula: (Task 1: ${expertEvaluation.task1.overall_band} + 2 × Task 2: ${expertEvaluation.task2.overall_band}) ÷ 3`
-                  : 'Professional expert evaluation'}
-              </p>
+              <p className="text-sm opacity-90"></p>
             </div>
           ) : (
             <div className="bg-gradient-to-r from-gray-400 to-gray-500 rounded-lg shadow-lg p-8 text-center text-white">

@@ -362,12 +362,6 @@ export default function AdminReviewDetails() {
               <p className={`text-3xl font-bold ${getBandColor(overallBand)}`}>
                 {overallBand.toFixed(1)}
               </p>
-              {overallBand > 0 && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Formula: (Task 1: {expertEvaluation.task1?.overall_band || 0}{' '}
-                  + 2 × Task 2: {expertEvaluation.task2?.overall_band || 0}) ÷ 3
-                </p>
-              )}
             </div>
           </div>
         </div>

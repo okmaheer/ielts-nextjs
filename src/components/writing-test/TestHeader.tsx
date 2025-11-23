@@ -1,18 +1,10 @@
 // components/writing-test/TestHeader.tsx
-import {
-  Settings,
-  LogOut,
-  BookOpen,
-  Clock,
-  FileText,
-  Sun,
-  Moon,
-  Type,
-} from 'lucide-react';
+'use client';
+
+import { Settings, BookOpen, Clock, Sun, Moon, Type } from 'lucide-react';
+import UserDropdown from '@/components/header/UserDropdown';
 
 interface TestHeaderProps {
-  studentName: string;
-  remainingTests: number;
   timeRemaining: number;
   darkMode: boolean;
   fontSize: number;
@@ -25,8 +17,6 @@ interface TestHeaderProps {
 }
 
 export default function TestHeader({
-  studentName,
-  remainingTests,
   timeRemaining,
   darkMode,
   fontSize,
@@ -35,7 +25,6 @@ export default function TestHeader({
   setDarkMode,
   setFontSize,
   onDashboardClick,
-  onLogout,
 }: TestHeaderProps) {
   const formatTime = (seconds: number): string => {
     // Handle invalid values (NaN, undefined, null, or negative)
@@ -55,35 +44,16 @@ export default function TestHeader({
 
   return (
     <header
-      className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-6 py-4 shadow-sm`}
+      className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b px-4 sm:px-6 py-3 sm:py-4 shadow-sm`}
     >
-      <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-6">
-        {/* Left Section */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#06BBCC] to-[#059aa8] flex items-center justify-center text-white font-bold">
-              {studentName.charAt(0)}
-            </div>
-            <div>
-              <div
-                className={`${darkMode ? 'text-gray-200' : 'text-gray-800'} font-semibold`}
-              >
-                {studentName}
-              </div>
-              <div
-                className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-xs flex items-center gap-1`}
-              >
-                <FileText size={12} />
-                {remainingTests} tests remaining
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="max-w-[1800px] mx-auto flex items-center justify-center gap-4 sm:gap-6 relative">
+        {/* Left Spacer for balance */}
+        <div className="flex-1"></div>
 
         {/* Center - Timer */}
         <div className="flex flex-col items-center">
           <div
-            className={`text-3xl font-bold ${getTimerColor()} ${timeRemaining <= 300 ? 'animate-pulse' : ''}`}
+            className={`text-2xl sm:text-3xl font-bold ${getTimerColor()} ${timeRemaining <= 300 ? 'animate-pulse' : ''}`}
           >
             {formatTime(timeRemaining)}
           </div>
@@ -91,26 +61,26 @@ export default function TestHeader({
             className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-xs mt-1 flex items-center gap-1`}
           >
             <Clock size={12} />
-            Time Remaining
+            <span className="hidden sm:inline">Time Remaining</span>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-3">
+        <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3">
           <button
             onClick={onDashboardClick}
-            className="bg-[#06BBCC] hover:bg-[#059aa8] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 shadow-sm hover:shadow-md"
+            className="bg-[#06BBCC] hover:bg-[#059aa8] text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1 sm:gap-2 shadow-sm hover:shadow-md"
           >
-            <BookOpen size={16} />
-            Dashboard
+            <BookOpen size={16} className="sm:block" />
+            <span className="hidden sm:inline">Dashboard</span>
           </button>
 
           <div className="relative">
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className={`${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} p-2.5 rounded-lg transition-all`}
+              className={`${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} p-2 sm:p-2.5 rounded-lg transition-all`}
             >
-              <Settings size={20} />
+              <Settings size={18} className="sm:w-5 sm:h-5" />
             </button>
 
             {showSettings && (
@@ -176,12 +146,8 @@ export default function TestHeader({
             )}
           </div>
 
-          <button
-            onClick={onLogout}
-            className="bg-red-500 hover:bg-red-600 text-white p-2.5 rounded-lg transition-all"
-          >
-            <LogOut size={20} />
-          </button>
+          {/* User Profile Dropdown */}
+          <UserDropdown />
         </div>
       </div>
     </header>

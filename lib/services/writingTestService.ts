@@ -6,10 +6,8 @@ import api from '../api';
 export interface TestSubmission {
   id: string;
   overall_band_score: number;
-  task_achievement_score: number;
-  coherence_cohesion_score: number;
-  lexical_resource_score: number;
-  grammar_score: number;
+  task1_score: number;
+  task2_score: number;
   submitted_at: string;
 }
 
@@ -86,10 +84,15 @@ export interface AIEvaluation {
 
 export interface TaskEvaluation {
   task_achievement?: number; // For Task 1
+  task_achievement_details?: string; // For Task 1
   task_response?: number; // For Task 2
+  task_response_details?: string; // For Task 2
   coherence_cohesion: number;
+  coherence_cohesion_details?: string;
   lexical_resource: number;
+  lexical_resource_details?: string;
   grammatical_accuracy: number;
+  grammatical_accuracy_details?: string;
   overall_band: number;
   feedback: string;
   improvements: string[];

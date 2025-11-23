@@ -235,44 +235,22 @@ export default function TestList({ category }: TestListProps) {
                           </span>
                         </div>
 
-                        {/* Score Breakdown */}
+                        {/* Task Scores */}
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Task Achievement
+                              Task 1 Score
                             </span>
-                            <span className="font-semibold text-gray-900 dark:text-white">
-                              {test.submission.task_achievement_score.toFixed(
-                                1
-                              )}
+                            <span className="font-bold text-gray-900 dark:text-white">
+                              {test.submission.task1_score.toFixed(1)}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Coherence & Cohesion
+                              Task 2 Score
                             </span>
-                            <span className="font-semibold text-gray-900 dark:text-white">
-                              {test.submission.coherence_cohesion_score.toFixed(
-                                1
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-gray-600 dark:text-gray-400">
-                              Lexical Resource
-                            </span>
-                            <span className="font-semibold text-gray-900 dark:text-white">
-                              {test.submission.lexical_resource_score.toFixed(
-                                1
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-gray-600 dark:text-gray-400">
-                              Grammar
-                            </span>
-                            <span className="font-semibold text-gray-900 dark:text-white">
-                              {test.submission.grammar_score.toFixed(1)}
+                            <span className="font-bold text-gray-900 dark:text-white">
+                              {test.submission.task2_score.toFixed(1)}
                             </span>
                           </div>
                         </div>

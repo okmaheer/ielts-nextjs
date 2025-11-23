@@ -1,44 +1,26 @@
 {
-  "components/charts/bar/BarChartOne.tsx -> react-apexcharts": {
-    "id": 8699,
-    "files": [
-      "static/chunks/477d4af2.342e367e990eb33e.js",
-      "static/chunks/8699.a66ea80a6958d029.js"
-    ]
-  },
-  "components/charts/line/LineChartOne.tsx -> react-apexcharts": {
-    "id": 8699,
-    "files": [
-      "static/chunks/477d4af2.342e367e990eb33e.js",
-      "static/chunks/8699.a66ea80a6958d029.js"
-    ]
-  },
   "components/ecommerce/CountryMap.tsx -> @react-jvectormap/core": {
-    "id": 8346,
+    "id": "components/ecommerce/CountryMap.tsx -> @react-jvectormap/core",
     "files": [
-      "static/chunks/7ce798d6.8101b0c4c43ce78c.js",
-      "static/chunks/96162faf.e21f63c797157074.js"
+      "static/chunks/_app-pages-browser_node_modules_react-jvectormap_core_dist_index_js.js"
     ]
   },
   "components/ecommerce/MonthlySalesChart.tsx -> react-apexcharts": {
-    "id": 8699,
+    "id": "components/ecommerce/MonthlySalesChart.tsx -> react-apexcharts",
     "files": [
-      "static/chunks/477d4af2.342e367e990eb33e.js",
-      "static/chunks/8699.a66ea80a6958d029.js"
+      "static/chunks/_app-pages-browser_node_modules_react-apexcharts_dist_react-apexcharts_min_js.js"
     ]
   },
   "components/ecommerce/MonthlyTarget.tsx -> react-apexcharts": {
-    "id": 8699,
+    "id": "components/ecommerce/MonthlyTarget.tsx -> react-apexcharts",
     "files": [
-      "static/chunks/477d4af2.342e367e990eb33e.js",
-      "static/chunks/8699.a66ea80a6958d029.js"
+      "static/chunks/_app-pages-browser_node_modules_react-apexcharts_dist_react-apexcharts_min_js.js"
     ]
   },
   "components/ecommerce/StatisticsChart.tsx -> react-apexcharts": {
-    "id": 8699,
+    "id": "components/ecommerce/StatisticsChart.tsx -> react-apexcharts",
     "files": [
-      "static/chunks/477d4af2.342e367e990eb33e.js",
-      "static/chunks/8699.a66ea80a6958d029.js"
+      "static/chunks/_app-pages-browser_node_modules_react-apexcharts_dist_react-apexcharts_min_js.js"
     ]
   }
 }

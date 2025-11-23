@@ -247,20 +247,64 @@ export default function TestList({ category }: TestListProps) {
                   </div>
                 </div>
 
-                {/* Action Button */}
-                <div className="border-t border-gray-100 p-4 dark:border-gray-800">
-                  <Button
-                    onClick={() => handleStartTest(test.id, test.name)}
-                    variant="primary"
-                    size="sm"
-                    className="w-full group-hover:shadow-md"
-                    endIcon={
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    }
-                  >
-                    Start Test
-                  </Button>
-                </div>
+                {/* Submission Scores or Action Button */}
+                {test.submission ? (
+                  <div className="border-t border-gray-100 p-4 dark:border-gray-800">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-gray-600 dark:text-gray-400">
+                          Task 1 Score:
+                        </span>
+                        <span className="font-bold text-primary">
+                          {test.submission.task1_score}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-gray-600 dark:text-gray-400">
+                          Task 2 Score:
+                        </span>
+                        <span className="font-bold text-primary">
+                          {test.submission.task2_score}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between border-t border-gray-200 pt-2 dark:border-gray-700">
+                        <span className="font-semibold text-gray-700 dark:text-gray-300">
+                          Overall Score:
+                        </span>
+                        <span className="text-lg font-bold text-primary">
+                          {test.submission.overall_band_score}
+                        </span>
+                      </div>
+                      <Button
+                        onClick={() =>
+                          router.push(
+                            `/writing-test-results/${test.submission?.id}`
+                          )
+                        }
+                        variant="outline"
+                        size="sm"
+                        className="w-full mt-2"
+                        endIcon={<ArrowRight className="h-4 w-4" />}
+                      >
+                        View Results
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border-t border-gray-100 p-4 dark:border-gray-800">
+                    <Button
+                      onClick={() => handleStartTest(test.id, test.name)}
+                      variant="primary"
+                      size="sm"
+                      className="w-full group-hover:shadow-md"
+                      endIcon={
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      }
+                    >
+                      Start Test
+                    </Button>
+                  </div>
+                )}
 
                 {/* Subtle Hover Border */}
                 <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-primary/0 transition-all duration-300 group-hover:ring-primary/30" />

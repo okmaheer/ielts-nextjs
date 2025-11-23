@@ -2,12 +2,24 @@
 
 import React, { useState } from 'react';
 import TestList from '@/components/opencomponents/takewritingtest/TestList';
-import { Clock, Target, Sparkles, CheckCircle, UserCheck } from 'lucide-react';
+import {
+  Clock,
+  Target,
+  Sparkles,
+  CheckCircle,
+  UserCheck,
+  LayoutDashboard,
+  LogIn,
+} from 'lucide-react';
+import UserDropdown from '@/components/header/UserDropdown';
+import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function AcademicTestList() {
   const [category, setCategory] = useState<'academic' | 'generalTraining'>(
     'academic'
   );
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-teal-50">
@@ -19,7 +31,41 @@ export default function AcademicTestList() {
         }}
       >
         <div className="absolute inset-0 bg-black opacity-10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+
+        {/* Top Navigation Bar */}
+        <div className="absolute top-0 left-0 right-0 z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <Link href="/" className="text-2xl font-bold text-white">
+                IELTS Practice
+              </Link>
+              <div className="flex items-center gap-2 sm:gap-3">
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1 sm:gap-2 shadow-sm hover:shadow-md border border-white/20"
+                    >
+                      <LayoutDashboard size={16} />
+                      <span className="hidden sm:inline">Dashboard</span>
+                    </Link>
+                    <UserDropdown />
+                  </>
+                ) : (
+                  <Link
+                    href="/signin"
+                    className="bg-white hover:bg-white/90 text-[#06BBCC] px-4 sm:px-6 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 shadow-md hover:shadow-lg"
+                  >
+                    <LogIn size={16} />
+                    <span>Sign In</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 pt-24">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
               <Sparkles className="w-4 h-4 text-white" />
