@@ -1,5 +1,5 @@
 // components/writing-test/SubmitModal.tsx
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Loader2 } from 'lucide-react';
 
 interface SubmitModalProps {
   show: boolean;
@@ -7,6 +7,7 @@ interface SubmitModalProps {
   task1Words: number;
   task2Words: number;
   timeRemaining: string;
+  isSubmitting?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }
@@ -17,6 +18,7 @@ export default function SubmitModal({
   task1Words,
   task2Words,
   timeRemaining,
+  isSubmitting = false,
   onCancel,
   onConfirm,
 }: SubmitModalProps) {
@@ -65,15 +67,24 @@ export default function SubmitModal({
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className={`flex-1 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} px-5 py-3 rounded-xl font-semibold transition-all`}
+            disabled={isSubmitting}
+            className={`flex-1 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} px-5 py-3 rounded-xl font-semibold transition-all ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-5 py-3 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg"
+            disabled={isSubmitting}
+            className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-5 py-3 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Confirm
+            {isSubmitting ? (
+              <>
+                <Loader2 size={20} className="animate-spin" />
+                <span>Submitting...</span>
+              </>
+            ) : (
+              'Confirm'
+            )}
           </button>
         </div>
       </div>

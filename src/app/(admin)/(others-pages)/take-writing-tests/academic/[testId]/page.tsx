@@ -27,6 +27,7 @@ export default function TakeWritingTestPage() {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showSubmitModal, setShowSubmitModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [testData, setTestData] = useState<WritingTestWithQuestions | null>(
     null
@@ -238,9 +239,10 @@ export default function TakeWritingTestPage() {
   };
 
   const submitTest = async () => {
-    if (!testData) return;
+    if (!testData || isSubmitting) return;
 
     try {
+      setIsSubmitting(true);
       const payload = {
         test_id: testData.test.id,
         time_taken: 3600 - timeRemaining, // 60 minutes in seconds
@@ -257,6 +259,7 @@ export default function TakeWritingTestPage() {
       router.push(`/writing-test-results/${result.data.submission_id}`);
     } catch (err) {
       console.error('Error submitting test:', err);
+      setIsSubmitting(false);
       alert('Failed to submit test. Please try again.');
     }
   };
@@ -486,6 +489,7 @@ export default function TakeWritingTestPage() {
         task1Words={countWords(answers[1] || '')}
         task2Words={countWords(answers[2] || '')}
         timeRemaining={formatTime(timeRemaining)}
+        isSubmitting={isSubmitting}
         onCancel={() => setShowSubmitModal(false)}
         onConfirm={confirmSubmit}
       />
