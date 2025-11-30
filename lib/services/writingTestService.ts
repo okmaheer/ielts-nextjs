@@ -8,6 +8,8 @@ export interface TestSubmission {
   overall_band_score: number;
   task1_score: number;
   task2_score: number;
+  task1_completed: boolean;
+  task2_completed: boolean;
   submitted_at: string;
 }
 

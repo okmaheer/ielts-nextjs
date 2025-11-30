@@ -827,8 +827,37 @@ export default function WritingTestResults() {
           )}
         </div>
 
-        {/* Back Button */}
-        <div className="mt-8 text-center">
+        {/* Action Buttons */}
+        <div className="mt-8 flex justify-center gap-4">
+          {submission && (
+            <>
+              {/* Check if any task is incomplete */}
+              {(!submission.ai_evaluation?.task1 ||
+                submission.ai_evaluation.task1.overall_band === 0 ||
+                !submission.ai_evaluation?.task2 ||
+                submission.ai_evaluation.task2.overall_band === 0) && (
+                <button
+                  onClick={() => {
+                    const testCategory =
+                      submission.ai_evaluation?.task1?.task_achievement !==
+                      undefined
+                        ? 'academic'
+                        : 'general-training';
+                    router.push(
+                      `/take-writing-tests/${testCategory}/${submission.test_id}`
+                    );
+                  }}
+                  className="bg-[#06BBCC] hover:bg-[#059aa8] text-white px-8 py-3 rounded-lg font-medium"
+                >
+                  Attempt{' '}
+                  {!submission.ai_evaluation?.task1 ||
+                  submission.ai_evaluation.task1.overall_band === 0
+                    ? 'Task 1'
+                    : 'Task 2'}
+                </button>
+              )}
+            </>
+          )}
           <button
             onClick={() => router.push('/dashboard')}
             className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-medium"

@@ -69,7 +69,7 @@ export default function AcademicWritingTestInstructionsPage() {
       'Complete two writing tasks within 60 minutes total',
       'Task questions are displayed on the left; write your answers on the right',
       'Word count is shown below your answer box at all times',
-      'Word requirements: 150-180 words (Task 1) and 250-320 words (Task 2)',
+      'Word requirements: 200 words (Task 1) and 250-320 words (Task 2)',
       'Timer visible at top of screen; changes color when 5 minutes remain',
       'You can change font size and color mode for comfortable writing',
       'Use arrow buttons at bottom to move between Task 1 and Task 2',

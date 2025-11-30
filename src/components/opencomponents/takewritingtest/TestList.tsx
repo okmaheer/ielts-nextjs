@@ -253,41 +253,72 @@ export default function TestList({ category }: TestListProps) {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <span className="font-medium text-gray-600 dark:text-gray-400">
-                          Task 1 Score:
+                          Task 1:
                         </span>
-                        <span className="font-bold text-primary">
-                          {test.submission.task1_score}
-                        </span>
+                        {test.submission.task1_completed ? (
+                          <span className="font-bold text-primary">
+                            {test.submission.task1_score}
+                          </span>
+                        ) : (
+                          <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                            Not Attempted
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="font-medium text-gray-600 dark:text-gray-400">
-                          Task 2 Score:
+                          Task 2:
                         </span>
-                        <span className="font-bold text-primary">
-                          {test.submission.task2_score}
-                        </span>
+                        {test.submission.task2_completed ? (
+                          <span className="font-bold text-primary">
+                            {test.submission.task2_score}
+                          </span>
+                        ) : (
+                          <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                            Not Attempted
+                          </span>
+                        )}
                       </div>
-                      <div className="flex items-center justify-between border-t border-gray-200 pt-2 dark:border-gray-700">
-                        <span className="font-semibold text-gray-700 dark:text-gray-300">
-                          Overall Score:
-                        </span>
-                        <span className="text-lg font-bold text-primary">
-                          {test.submission.overall_band_score}
-                        </span>
+                      {test.submission.task1_completed &&
+                        test.submission.task2_completed && (
+                          <div className="flex items-center justify-between border-t border-gray-200 pt-2 dark:border-gray-700">
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">
+                              Overall Score:
+                            </span>
+                            <span className="text-lg font-bold text-primary">
+                              {test.submission.overall_band_score}
+                            </span>
+                          </div>
+                        )}
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          onClick={() =>
+                            router.push(
+                              `/writing-test-results/${test.submission?.id}`
+                            )
+                          }
+                          variant="outline"
+                          size="sm"
+                          className="flex-1"
+                          endIcon={<ArrowRight className="h-4 w-4" />}
+                        >
+                          View Results
+                        </Button>
+                        {(!test.submission.task1_completed ||
+                          !test.submission.task2_completed) && (
+                          <Button
+                            onClick={() => handleStartTest(test.id, test.name)}
+                            variant="primary"
+                            size="sm"
+                            className="flex-1"
+                          >
+                            Attempt{' '}
+                            {!test.submission.task1_completed
+                              ? 'Task 1'
+                              : 'Task 2'}
+                          </Button>
+                        )}
                       </div>
-                      <Button
-                        onClick={() =>
-                          router.push(
-                            `/writing-test-results/${test.submission?.id}`
-                          )
-                        }
-                        variant="outline"
-                        size="sm"
-                        className="w-full mt-2"
-                        endIcon={<ArrowRight className="h-4 w-4" />}
-                      >
-                        View Results
-                      </Button>
                     </div>
                   </div>
                 ) : (

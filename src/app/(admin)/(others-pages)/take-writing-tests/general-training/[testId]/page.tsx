@@ -21,6 +21,9 @@ export default function TakeWritingTestPage() {
 
   const [currentTask, setCurrentTask] = useState<number>(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [completedTasks, setCompletedTasks] = useState<Record<number, boolean>>(
+    {}
+  );
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [fontSize, setFontSize] = useState<number>(16);
@@ -80,16 +83,47 @@ export default function TakeWritingTestPage() {
         setIsLoading(true);
         setError(null);
 
-        // Check if user has already taken this test
+        // Check if user has already submitted this test
         const userSubmissions = await writingTestService.getUserSubmissions();
-        const hasSubmission = userSubmissions.some(
+        const existingSubmission = userSubmissions.find(
           submission => submission.test_id === testId
         );
 
-        if (hasSubmission) {
-          // User has already taken this test, redirect to dashboard
-          router.push('/dashboard');
-          return;
+        if (existingSubmission) {
+          // Parse AI evaluation to check completion status
+          const aiEval = existingSubmission.ai_evaluation;
+          const task1Completed = aiEval?.task1 && aiEval.task1.overall_band > 0;
+          const task2Completed = aiEval?.task2 && aiEval.task2.overall_band > 0;
+
+          // Check if both tasks are completed
+          if (task1Completed && task2Completed) {
+            // Both tasks done, redirect to results
+            router.push(`/writing-test-results/${existingSubmission.id}`);
+            return;
+          }
+
+          // Pre-fill answers for completed tasks
+          const prefilledAnswers: Record<number, string> = {};
+          const completed: Record<number, boolean> = {};
+
+          if (existingSubmission.task1_answer && task1Completed) {
+            prefilledAnswers[1] = existingSubmission.task1_answer;
+            completed[1] = true;
+          }
+          if (existingSubmission.task2_answer && task2Completed) {
+            prefilledAnswers[2] = existingSubmission.task2_answer;
+            completed[2] = true;
+          }
+
+          setAnswers(prefilledAnswers);
+          setCompletedTasks(completed);
+
+          // Set current task to the first incomplete task
+          if (!task1Completed) {
+            setCurrentTask(1);
+          } else if (!task2Completed) {
+            setCurrentTask(2);
+          }
         }
 
         const data = await writingTestService.getTestDetails(Number(testId));
@@ -337,7 +371,12 @@ export default function TakeWritingTestPage() {
     return null;
   }
 
-  const currentQuestion = testData.questions.find(
+  // Filter out completed tasks - user should only see incomplete tasks
+  const availableQuestions = testData.questions.filter(
+    (q: WritingQuestion) => !completedTasks[q.task_number]
+  );
+
+  const currentQuestion = availableQuestions.find(
     (q: WritingQuestion) => q.task_number === currentTask
   );
   const currentAnswer = answers[currentTask] || '';
@@ -465,9 +504,14 @@ export default function TakeWritingTestPage() {
                   onChange={e =>
                     handleAnswerChange(e.target.value, currentTask)
                   }
+                  readOnly={completedTasks[currentTask]}
                   style={{ fontSize: `${fontSize}px` }}
-                  className={`flex-1 min-h-[250px] ${darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border-2 rounded-lg sm:rounded-xl p-3 sm:p-4 focus:outline-none focus:ring-2 focus:ring-[#06BBCC] focus:border-[#06BBCC] resize-none transition-all`}
-                  placeholder="Start typing your answer here..."
+                  className={`flex-1 min-h-[250px] ${completedTasks[currentTask] ? (darkMode ? 'bg-gray-800 border-gray-700 text-gray-400' : 'bg-gray-100 border-gray-400 text-gray-600 cursor-not-allowed') : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border-2 rounded-lg sm:rounded-xl p-3 sm:p-4 ${!completedTasks[currentTask] && 'focus:outline-none focus:ring-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]'} resize-none transition-all`}
+                  placeholder={
+                    completedTasks[currentTask]
+                      ? 'This task has been completed and submitted'
+                      : 'Start typing your answer here...'
+                  }
                 />
               </div>
             </div>
@@ -477,7 +521,8 @@ export default function TakeWritingTestPage() {
 
       <TestFooter
         currentTask={currentTask}
-        totalTasks={testData.questions.length}
+        totalTasks={availableQuestions.length}
+        availableTaskNumbers={availableQuestions.map(q => q.task_number)}
         darkMode={darkMode}
         onTaskChange={setCurrentTask}
         onSubmit={handleSubmit}

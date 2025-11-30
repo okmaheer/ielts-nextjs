@@ -65,7 +65,6 @@ export default function Instructions({
   testType,
   category,
   duration,
-  testName,
   generalRules,
   importantNotes,
   startRoute,
@@ -290,9 +289,7 @@ export default function Instructions({
 
           {/* Footer Info */}
           <div className="text-center pt-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Test: #{testName} • Make sure you&apos;re ready before starting
-            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400"></p>
           </div>
         </div>
       </div>

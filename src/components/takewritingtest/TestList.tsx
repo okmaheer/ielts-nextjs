@@ -173,18 +173,26 @@ export default function TestList({ category }: TestListProps) {
               const hasSubmission =
                 test.submission !== null && test.submission !== undefined;
 
+              // Determine if submission is complete or partial
+              const isFullyCompleted =
+                hasSubmission &&
+                test.submission?.task1_completed &&
+                test.submission?.task2_completed;
+
               return (
                 <div
                   key={test.id}
                   className={`group relative flex flex-col overflow-hidden rounded-2xl border ${hasSubmission ? 'border-green-200 bg-green-50/50 dark:border-green-900/30 dark:bg-green-900/10' : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/60'} shadow-sm transition-all duration-300 hover:shadow-xl`}
                 >
-                  {/* Completed Badge */}
+                  {/* Completed/Partial Badge */}
                   {hasSubmission && (
                     <div className="absolute top-4 right-4 z-10">
-                      <div className="flex items-center gap-1.5 rounded-full bg-green-600 px-3 py-1.5 shadow-lg">
+                      <div
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 shadow-lg ${isFullyCompleted ? 'bg-green-600' : 'bg-orange-500'}`}
+                      >
                         <CheckCircle className="h-3.5 w-3.5 text-white" />
                         <span className="text-xs font-bold text-white">
-                          Completed
+                          {isFullyCompleted ? 'Completed' : 'Partial'}
                         </span>
                       </div>
                     </div>
@@ -222,36 +230,51 @@ export default function TestList({ category }: TestListProps) {
                   >
                     {hasSubmission && test.submission ? (
                       <div className="space-y-3">
-                        {/* Overall Band Score */}
-                        <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm dark:bg-gray-900/50">
-                          <div className="flex items-center gap-2">
-                            <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                              Overall Band
-                            </span>
-                          </div>
-                          <span className="font-bold text-green-600 text-xl dark:text-green-400">
-                            {test.submission.overall_band_score.toFixed(1)}
-                          </span>
-                        </div>
+                        {/* Overall Band Score - Only show if both tasks completed */}
+                        {test.submission.task1_completed &&
+                          test.submission.task2_completed && (
+                            <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm dark:bg-gray-900/50">
+                              <div className="flex items-center gap-2">
+                                <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                  Overall Band
+                                </span>
+                              </div>
+                              <span className="font-bold text-green-600 text-xl dark:text-green-400">
+                                {test.submission.overall_band_score.toFixed(1)}
+                              </span>
+                            </div>
+                          )}
 
-                        {/* Task Scores */}
+                        {/* Task Scores with completion status */}
                         <div className="space-y-2">
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Task 1 Score
+                              Task 1
                             </span>
-                            <span className="font-bold text-gray-900 dark:text-white">
-                              {test.submission.task1_score.toFixed(1)}
-                            </span>
+                            {test.submission.task1_completed ? (
+                              <span className="font-bold text-gray-900 dark:text-white">
+                                {test.submission.task1_score.toFixed(1)}
+                              </span>
+                            ) : (
+                              <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                                Not Attempted
+                              </span>
+                            )}
                           </div>
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Task 2 Score
+                              Task 2
                             </span>
-                            <span className="font-bold text-gray-900 dark:text-white">
-                              {test.submission.task2_score.toFixed(1)}
-                            </span>
+                            {test.submission.task2_completed ? (
+                              <span className="font-bold text-gray-900 dark:text-white">
+                                {test.submission.task2_score.toFixed(1)}
+                              </span>
+                            ) : (
+                              <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                                Not Attempted
+                              </span>
+                            )}
                           </div>
                         </div>
 
@@ -298,16 +321,32 @@ export default function TestList({ category }: TestListProps) {
                   <div
                     className={`border-t ${hasSubmission ? 'border-green-100 dark:border-green-900/20' : 'border-gray-100 dark:border-gray-800'} p-4`}
                   >
-                    {hasSubmission ? (
-                      <Button
-                        onClick={() => handleViewResults(test.submission!.id)}
-                        variant="outline"
-                        size="sm"
-                        className="w-full border-green-600 text-green-600 hover:bg-green-50 dark:border-green-400 dark:text-green-400 dark:hover:bg-green-900/20"
-                        endIcon={<Eye className="h-4 w-4" />}
-                      >
-                        View Results
-                      </Button>
+                    {hasSubmission && test.submission ? (
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => handleViewResults(test.submission!.id)}
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 border-green-600 text-green-600 hover:bg-green-50 dark:border-green-400 dark:text-green-400 dark:hover:bg-green-900/20"
+                          endIcon={<Eye className="h-4 w-4" />}
+                        >
+                          View Results
+                        </Button>
+                        {(!test.submission.task1_completed ||
+                          !test.submission.task2_completed) && (
+                          <Button
+                            onClick={() => handleStartTest(test.id)}
+                            variant="primary"
+                            size="sm"
+                            className="flex-1"
+                          >
+                            Attempt{' '}
+                            {!test.submission.task1_completed
+                              ? 'Task 1'
+                              : 'Task 2'}
+                          </Button>
+                        )}
+                      </div>
                     ) : (
                       <Button
                         onClick={() => handleStartTest(test.id)}
