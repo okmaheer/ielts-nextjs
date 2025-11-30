@@ -88,14 +88,6 @@
       "static/chunks/6874-7a359d18b71ff357.js",
       "static/chunks/app/(admin)/(others-pages)/(chart)/bar-chart/page-14370602682fe349.js"
     ],
-    "/(admin)/(others-pages)/(chart)/line-chart/page": [
-      "static/chunks/webpack-1e345f296b1dd5d8.js",
-      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
-      "static/chunks/1684-accef25fc8a47767.js",
-      "static/chunks/main-app-2efd450d8ab9f590.js",
-      "static/chunks/6874-7a359d18b71ff357.js",
-      "static/chunks/app/(admin)/(others-pages)/(chart)/line-chart/page-84b502899ceaf1d1.js"
-    ],
     "/(admin)/(others-pages)/(forms)/form-elements/page": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
       "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
@@ -116,6 +108,14 @@
       "static/chunks/6874-7a359d18b71ff357.js",
       "static/chunks/3063-b00bbd69a31f8b87.js",
       "static/chunks/app/(admin)/(others-pages)/(tables)/basic-tables/page-606ddba3507339d6.js"
+    ],
+    "/(admin)/(others-pages)/(chart)/line-chart/page": [
+      "static/chunks/webpack-1e345f296b1dd5d8.js",
+      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
+      "static/chunks/1684-accef25fc8a47767.js",
+      "static/chunks/main-app-2efd450d8ab9f590.js",
+      "static/chunks/6874-7a359d18b71ff357.js",
+      "static/chunks/app/(admin)/(others-pages)/(chart)/line-chart/page-84b502899ceaf1d1.js"
     ],
     "/(admin)/(others-pages)/blank/page": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
@@ -162,18 +162,6 @@
       "static/chunks/5483-e065afc41131f3bb.js",
       "static/chunks/app/(admin)/(others-pages)/take-writing-tests/general-training/page-adacf2ffbc7accc0.js"
     ],
-    "/(admin)/(others-pages)/users/page": [
-      "static/chunks/webpack-1e345f296b1dd5d8.js",
-      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
-      "static/chunks/1684-accef25fc8a47767.js",
-      "static/chunks/main-app-2efd450d8ab9f590.js",
-      "static/chunks/6874-7a359d18b71ff357.js",
-      "static/chunks/1445-c0f82dabb4d2b8a0.js",
-      "static/chunks/9688-d7c0b1ead28f6a31.js",
-      "static/chunks/3256-3b428e6095f5aa88.js",
-      "static/chunks/5771-3d0679ecf352d4c8.js",
-      "static/chunks/app/(admin)/(others-pages)/users/page-ab0bb413654be24a.js"
-    ],
     "/(admin)/(ui-elements)/alerts/page": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
       "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
@@ -191,6 +179,18 @@
       "static/chunks/9688-d7c0b1ead28f6a31.js",
       "static/chunks/app/(admin)/(ui-elements)/modals/page-cebeb164d8a9a8fd.js"
     ],
+    "/(admin)/(others-pages)/users/page": [
+      "static/chunks/webpack-1e345f296b1dd5d8.js",
+      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
+      "static/chunks/1684-accef25fc8a47767.js",
+      "static/chunks/main-app-2efd450d8ab9f590.js",
+      "static/chunks/6874-7a359d18b71ff357.js",
+      "static/chunks/1445-c0f82dabb4d2b8a0.js",
+      "static/chunks/9688-d7c0b1ead28f6a31.js",
+      "static/chunks/3256-3b428e6095f5aa88.js",
+      "static/chunks/5771-3d0679ecf352d4c8.js",
+      "static/chunks/app/(admin)/(others-pages)/users/page-ab0bb413654be24a.js"
+    ],
     "/(admin)/(ui-elements)/images/page": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
       "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
@@ -207,15 +207,6 @@
       "static/chunks/main-app-2efd450d8ab9f590.js",
       "static/chunks/6874-7a359d18b71ff357.js",
       "static/chunks/app/(admin)/(ui-elements)/videos/page-64f38785feeed909.js"
-    ],
-    "/(admin)/(ui-elements)/avatars/page": [
-      "static/chunks/webpack-1e345f296b1dd5d8.js",
-      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
-      "static/chunks/1684-accef25fc8a47767.js",
-      "static/chunks/main-app-2efd450d8ab9f590.js",
-      "static/chunks/6874-7a359d18b71ff357.js",
-      "static/chunks/3063-b00bbd69a31f8b87.js",
-      "static/chunks/app/(admin)/(ui-elements)/avatars/page-1af97c4100fe517f.js"
     ],
     "/(admin)/(ui-elements)/buttons/page": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
@@ -236,6 +227,15 @@
       "static/chunks/8108-fb4ed46f3d8a38c9.js",
       "static/chunks/5771-3d0679ecf352d4c8.js",
       "static/chunks/app/(admin)/dashboard/page-ed186976d3a9687c.js"
+    ],
+    "/(admin)/(ui-elements)/avatars/page": [
+      "static/chunks/webpack-1e345f296b1dd5d8.js",
+      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
+      "static/chunks/1684-accef25fc8a47767.js",
+      "static/chunks/main-app-2efd450d8ab9f590.js",
+      "static/chunks/6874-7a359d18b71ff357.js",
+      "static/chunks/3063-b00bbd69a31f8b87.js",
+      "static/chunks/app/(admin)/(ui-elements)/avatars/page-1af97c4100fe517f.js"
     ],
     "/(admin)/(ui-elements)/badge/page": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
@@ -273,24 +273,6 @@
       "static/chunks/3063-b00bbd69a31f8b87.js",
       "static/chunks/app/(full-width-pages)/(error-pages)/error-404/page-2704023fb6d54d85.js"
     ],
-    "/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/layout": [
-      "static/chunks/webpack-1e345f296b1dd5d8.js",
-      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
-      "static/chunks/1684-accef25fc8a47767.js",
-      "static/chunks/main-app-2efd450d8ab9f590.js",
-      "static/chunks/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/layout-e2a6908110f5e9c2.js"
-    ],
-    "/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/instructions/page": [
-      "static/chunks/webpack-1e345f296b1dd5d8.js",
-      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
-      "static/chunks/1684-accef25fc8a47767.js",
-      "static/chunks/main-app-2efd450d8ab9f590.js",
-      "static/chunks/6874-7a359d18b71ff357.js",
-      "static/chunks/3063-b00bbd69a31f8b87.js",
-      "static/chunks/2660-27ef55da4b5b2c0b.js",
-      "static/chunks/897-5e57e700ec7c4cd4.js",
-      "static/chunks/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/instructions/page-18ceb63961efc892.js"
-    ],
     "/(admin)/(others-pages)/take-writing-tests/academic/[testId]/layout": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
       "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
@@ -309,18 +291,6 @@
       "static/chunks/897-5e57e700ec7c4cd4.js",
       "static/chunks/app/(admin)/(others-pages)/take-writing-tests/academic/[testId]/instructions/page-12d1cce70fba441d.js"
     ],
-    "/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/page": [
-      "static/chunks/webpack-1e345f296b1dd5d8.js",
-      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
-      "static/chunks/1684-accef25fc8a47767.js",
-      "static/chunks/main-app-2efd450d8ab9f590.js",
-      "static/chunks/6874-7a359d18b71ff357.js",
-      "static/chunks/3063-b00bbd69a31f8b87.js",
-      "static/chunks/1445-c0f82dabb4d2b8a0.js",
-      "static/chunks/2660-27ef55da4b5b2c0b.js",
-      "static/chunks/9258-b426cde619b4c16a.js",
-      "static/chunks/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/page-cf1f802fc49a5044.js"
-    ],
     "/(admin)/(others-pages)/take-writing-tests/academic/[testId]/page": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
       "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
@@ -332,6 +302,36 @@
       "static/chunks/2660-27ef55da4b5b2c0b.js",
       "static/chunks/9258-b426cde619b4c16a.js",
       "static/chunks/app/(admin)/(others-pages)/take-writing-tests/academic/[testId]/page-dc2ba84778f013f1.js"
+    ],
+    "/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/layout": [
+      "static/chunks/webpack-1e345f296b1dd5d8.js",
+      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
+      "static/chunks/1684-accef25fc8a47767.js",
+      "static/chunks/main-app-2efd450d8ab9f590.js",
+      "static/chunks/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/layout-e2a6908110f5e9c2.js"
+    ],
+    "/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/instructions/page": [
+      "static/chunks/webpack-1e345f296b1dd5d8.js",
+      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
+      "static/chunks/1684-accef25fc8a47767.js",
+      "static/chunks/main-app-2efd450d8ab9f590.js",
+      "static/chunks/6874-7a359d18b71ff357.js",
+      "static/chunks/3063-b00bbd69a31f8b87.js",
+      "static/chunks/2660-27ef55da4b5b2c0b.js",
+      "static/chunks/897-5e57e700ec7c4cd4.js",
+      "static/chunks/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/instructions/page-18ceb63961efc892.js"
+    ],
+    "/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/page": [
+      "static/chunks/webpack-1e345f296b1dd5d8.js",
+      "static/chunks/4bd1b696-3c1c72b37aadb3c2.js",
+      "static/chunks/1684-accef25fc8a47767.js",
+      "static/chunks/main-app-2efd450d8ab9f590.js",
+      "static/chunks/6874-7a359d18b71ff357.js",
+      "static/chunks/3063-b00bbd69a31f8b87.js",
+      "static/chunks/1445-c0f82dabb4d2b8a0.js",
+      "static/chunks/2660-27ef55da4b5b2c0b.js",
+      "static/chunks/9258-b426cde619b4c16a.js",
+      "static/chunks/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/page-cf1f802fc49a5044.js"
     ],
     "/(full-width-pages)/(auth)/layout": [
       "static/chunks/webpack-1e345f296b1dd5d8.js",
