@@ -756,36 +756,42 @@ function TaskReviewForm({
   );
 }
 
-// Score Input Component
+// Score Input Component (Display Only)
 function ScoreInput({
   label,
   value,
-  onChange,
 }: {
   label: string;
   value: number;
   onChange: (value: number) => void;
 }) {
-  const bandScores = [
-    0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9,
-  ];
+  const getBandColor = (band: number): string => {
+    if (band >= 7) return 'bg-green-500';
+    if (band >= 6) return 'bg-yellow-500';
+    if (band >= 4) return 'bg-orange-500';
+    return 'bg-red-500';
+  };
 
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
         {label}
       </label>
-      <select
-        value={value}
-        onChange={e => onChange(parseFloat(e.target.value))}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#06BBCC] focus:border-transparent"
-      >
-        {bandScores.map(score => (
-          <option key={score} value={score}>
-            {score === 0 ? 'Select score' : `Band ${score}`}
-          </option>
-        ))}
-      </select>
+      <div className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-gray-900 font-semibold min-w-[80px]">
+            {value === 0 ? 'Not Scored' : `Band ${value}`}
+          </span>
+          {value > 0 && (
+            <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div
+                className={`${getBandColor(value)} h-3 rounded-full transition-all duration-300`}
+                style={{ width: `${(value / 9) * 100}%` }}
+              ></div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

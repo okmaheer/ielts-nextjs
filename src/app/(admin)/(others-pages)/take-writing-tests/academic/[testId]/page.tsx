@@ -89,6 +89,8 @@ export default function TakeWritingTestPage() {
           submission => submission.test_id === testId
         );
 
+        let hasExistingTask = false;
+
         if (existingSubmission) {
           // Parse AI evaluation to check completion status
           const aiEval = existingSubmission.ai_evaluation;
@@ -109,10 +111,12 @@ export default function TakeWritingTestPage() {
           if (existingSubmission.task1_answer && task1Completed) {
             prefilledAnswers[1] = existingSubmission.task1_answer;
             completed[1] = true;
+            hasExistingTask = true;
           }
           if (existingSubmission.task2_answer && task2Completed) {
             prefilledAnswers[2] = existingSubmission.task2_answer;
             completed[2] = true;
+            hasExistingTask = true;
           }
 
           setAnswers(prefilledAnswers);
@@ -129,8 +133,12 @@ export default function TakeWritingTestPage() {
         const data = await writingTestService.getTestDetails(Number(testId));
         setTestData(data);
 
-        // Always set timer to 60 minutes (3600 seconds)
-        setTimeRemaining(3600);
+        // Set timer: 40 minutes if one task already completed, 60 minutes for fresh attempt
+        if (hasExistingTask) {
+          setTimeRemaining(2400); // 40 minutes for second task
+        } else {
+          setTimeRemaining(3600); // 60 minutes for fresh attempt
+        }
       } catch (err) {
         console.error('Error fetching test:', err);
         setError('Failed to load test. Please try again.');
@@ -289,17 +297,19 @@ export default function TakeWritingTestPage() {
 
       const result = await writingTestService.submitWritingTest(payload);
       console.log('Test submitted successfully!', result);
-      // Redirect to results page
+      // Redirect to results page (modal will disappear automatically)
       router.push(`/writing-test-results/${result.data.submission_id}`);
     } catch (err) {
       console.error('Error submitting test:', err);
       setIsSubmitting(false);
+      setShowSubmitModal(false); // Close modal on error
       alert('Failed to submit test. Please try again.');
     }
   };
 
   const confirmSubmit = async () => {
-    setShowSubmitModal(false);
+    // Don't close modal - keep it open to show loading state
+    // Modal will disappear when we redirect to results page
     await submitTest();
   };
 

@@ -1,13 +1,7 @@
 // src/config/navigation.ts
 import React from 'react';
 import {
-  BoxCubeIcon,
   GridIcon,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
   UserCircleIcon,
   TaskIcon,
   CheckCircleIcon,
@@ -90,136 +84,9 @@ export const navItems: NavItem[] = [
     path: '/profile',
     roles: [], // Visible to all
   },
-  {
-    name: 'Forms',
-    icon: React.createElement(ListIcon),
-    roles: [], // Visible to all
-    subItems: [
-      {
-        name: 'Form Elements',
-        path: '/form-elements',
-        pro: false,
-        roles: [], // Visible to all
-      },
-    ],
-  },
-  {
-    name: 'Tables',
-    icon: React.createElement(TableIcon),
-    roles: [], // Visible to all
-    subItems: [
-      {
-        name: 'Basic Tables',
-        path: '/basic-tables',
-        pro: false,
-        roles: [], // Visible to all
-      },
-    ],
-  },
-  {
-    name: 'Pages',
-    icon: React.createElement(PageIcon),
-    roles: [], // Visible to all
-    subItems: [
-      {
-        name: 'Blank Page',
-        path: '/blank',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: '404 Error',
-        path: '/error-404',
-        pro: false,
-        roles: [], // Visible to all
-      },
-    ],
-  },
 ];
 
 /**
  * Others section navigation items
  */
-export const othersItems: NavItem[] = [
-  {
-    icon: React.createElement(PieChartIcon),
-    name: 'Charts',
-    roles: [], // Visible to all
-    subItems: [
-      {
-        name: 'Line Chart',
-        path: '/line-chart',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: 'Bar Chart',
-        path: '/bar-chart',
-        pro: false,
-        roles: [], // Visible to all
-      },
-    ],
-  },
-  {
-    icon: React.createElement(BoxCubeIcon),
-    name: 'UI Elements',
-    roles: [], // Visible to all
-    subItems: [
-      {
-        name: 'Alerts',
-        path: '/alerts',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: 'Avatar',
-        path: '/avatars',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: 'Badge',
-        path: '/badge',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: 'Buttons',
-        path: '/buttons',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: 'Images',
-        path: '/images',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: 'Videos',
-        path: '/videos',
-        pro: false,
-        roles: [], // Visible to all
-      },
-    ],
-  },
-  {
-    icon: React.createElement(PlugInIcon),
-    name: 'Authentication',
-    roles: [], // Visible to all
-    subItems: [
-      {
-        name: 'Sign In',
-        path: '/signin',
-        pro: false,
-        roles: [], // Visible to all
-      },
-      {
-        name: 'Sign Up',
-        path: '/signup',
-        pro: false,
-        roles: [], // Visible to all
-      },
-    ],
-  },
-];
+export const othersItems: NavItem[] = [];

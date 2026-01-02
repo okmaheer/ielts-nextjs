@@ -7,7 +7,6 @@ import {
   type SubmissionDetails,
   type TaskEvaluation,
 } from '../../../../../../lib/services/writingTestService';
-import { expertReviewService } from '../../../../../../lib/services/expertReviewService';
 import {
   ChevronDown,
   ChevronUp,
@@ -16,7 +15,6 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Send,
 } from 'lucide-react';
 
 export default function WritingTestResults() {
@@ -33,20 +31,6 @@ export default function WritingTestResults() {
   const [expandedCriteria, setExpandedCriteria] = useState<{
     [key: string]: boolean;
   }>({});
-
-  // Expert review states
-  const [reviewStatus, setReviewStatus] = useState<{
-    has_request: boolean;
-    request_id?: string;
-    status?: string;
-    requested_at?: string;
-    reviewed_at?: string | null;
-  } | null>(null);
-  const [isRequestingReview, setIsRequestingReview] = useState(false);
-  const [requestMessage, setRequestMessage] = useState<{
-    type: 'success' | 'error';
-    text: string;
-  } | null>(null);
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -67,78 +51,6 @@ export default function WritingTestResults() {
       fetchSubmission();
     }
   }, [submissionId]);
-
-  // Check expert review status
-  useEffect(() => {
-    const checkReviewStatus = async () => {
-      if (!submissionId) return;
-
-      try {
-        const status =
-          await expertReviewService.checkReviewStatus(submissionId);
-        setReviewStatus(status);
-      } catch (err) {
-        console.error('Error checking review status:', err);
-      }
-    };
-
-    if (submissionId) {
-      checkReviewStatus();
-    }
-  }, [submissionId]);
-
-  const handleRequestReview = async () => {
-    if (!submissionId) return;
-
-    setIsRequestingReview(true);
-    setRequestMessage(null);
-
-    try {
-      await expertReviewService.requestReview(submissionId);
-
-      // Refresh review status
-      const status = await expertReviewService.checkReviewStatus(submissionId);
-      setReviewStatus(status);
-
-      setRequestMessage({
-        type: 'success',
-        text: 'Expert review requested successfully! You will be notified via email when the review is completed.',
-      });
-    } catch (err) {
-      console.error('Error requesting review:', err);
-      const error = err as { response?: { data?: { message?: string } } };
-      setRequestMessage({
-        type: 'error',
-        text:
-          error.response?.data?.message ||
-          'Failed to request expert review. Please try again.',
-      });
-    } finally {
-      setIsRequestingReview(false);
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      pending: {
-        label: 'Pending Review',
-        color: 'bg-yellow-100 text-yellow-700',
-      },
-      in_progress: { label: 'In Progress', color: 'bg-blue-100 text-blue-700' },
-      completed: { label: 'Completed', color: 'bg-green-100 text-green-700' },
-      rejected: { label: 'Rejected', color: 'bg-red-100 text-red-700' },
-    };
-
-    const config =
-      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
-    return (
-      <span
-        className={`px-3 py-1 rounded-full text-xs font-medium ${config.color}`}
-      >
-        {config.label}
-      </span>
-    );
-  };
 
   const toggleTask = (task: 'task1' | 'task2') => {
     setExpandedTask(expandedTask === task ? null : task);
@@ -643,189 +555,6 @@ export default function WritingTestResults() {
         )}
 
         {/* Expert Feedback Section */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Expert Feedback
-          </h2>
-
-          {expert_feedback_sent && expertEvaluation ? (
-            <div className="space-y-6">
-              {/* Task 1 Feedback */}
-              {expertEvaluation.task1 && (
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-purple-900 mb-3">
-                    Task 1 Expert Feedback
-                  </h3>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 mb-1">
-                        Feedback:
-                      </p>
-                      <p className="text-gray-700 whitespace-pre-wrap">
-                        {expertEvaluation.task1.feedback}
-                      </p>
-                    </div>
-                    {expertEvaluation.task1.improvements &&
-                      expertEvaluation.task1.improvements.length > 0 && (
-                        <div>
-                          <p className="text-sm font-medium text-gray-700 mb-2">
-                            Improvements:
-                          </p>
-                          <ul className="list-disc list-inside space-y-1 text-gray-700">
-                            {expertEvaluation.task1.improvements.map(
-                              (improvement: string, idx: number) => (
-                                <li key={idx}>{improvement}</li>
-                              )
-                            )}
-                          </ul>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              )}
-
-              {/* Task 2 Feedback */}
-              {expertEvaluation.task2 && (
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-purple-900 mb-3">
-                    Task 2 Expert Feedback
-                  </h3>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 mb-1">
-                        Feedback:
-                      </p>
-                      <p className="text-gray-700 whitespace-pre-wrap">
-                        {expertEvaluation.task2.feedback}
-                      </p>
-                    </div>
-                    {expertEvaluation.task2.improvements &&
-                      expertEvaluation.task2.improvements.length > 0 && (
-                        <div>
-                          <p className="text-sm font-medium text-gray-700 mb-2">
-                            Improvements:
-                          </p>
-                          <ul className="list-disc list-inside space-y-1 text-gray-700">
-                            {expertEvaluation.task2.improvements.map(
-                              (improvement: string, idx: number) => (
-                                <li key={idx}>{improvement}</li>
-                              )
-                            )}
-                          </ul>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              )}
-
-              {submission.expert_score && (
-                <div className="mt-4 pt-4 border-t border-purple-200">
-                  <span className="text-sm font-semibold text-gray-700">
-                    Expert Overall Score:{' '}
-                  </span>
-                  <span
-                    className={`text-lg font-bold ${getBandColor(submission.expert_score)}`}
-                  >
-                    {submission.expert_score}
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              {/* Show request status or request button */}
-              {reviewStatus?.has_request ? (
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle className="text-blue-600" size={20} />
-                      <p className="font-semibold text-gray-700">
-                        Expert Review Requested
-                      </p>
-                    </div>
-                    {reviewStatus.status && getStatusBadge(reviewStatus.status)}
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Your request for expert review has been submitted.
-                    {reviewStatus.requested_at && (
-                      <span className="block mt-1">
-                        Requested on:{' '}
-                        {new Date(reviewStatus.requested_at).toLocaleDateString(
-                          'en-US',
-                          {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          }
-                        )}
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    You will receive an email notification when the expert
-                    review is completed.
-                  </p>
-                  <button
-                    onClick={() => router.push('/my-expert-reviews')}
-                    className="mt-3 text-sm text-[#06BBCC] hover:text-[#059aa8] font-medium"
-                  >
-                    View all my review requests →
-                  </button>
-                </div>
-              ) : (
-                <div className="bg-yellow-50 p-4 rounded-lg">
-                  <div className="flex items-start gap-3 mb-4">
-                    <AlertCircle className="text-yellow-600 mt-1" size={20} />
-                    <div>
-                      <p className="font-semibold text-gray-700">
-                        Expert feedback not requested yet
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Request an expert review to get professional feedback on
-                        your writing. Expert&apos;s score and feedback will be
-                        sent via email after 24 hours and shown here as well.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Success/Error Message */}
-                  {requestMessage && (
-                    <div
-                      className={`mb-4 p-3 rounded-lg ${
-                        requestMessage.type === 'success'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      <p className="text-sm">{requestMessage.text}</p>
-                    </div>
-                  )}
-
-                  {/* Request Button */}
-                  <button
-                    onClick={handleRequestReview}
-                    disabled={isRequestingReview}
-                    className="w-full sm:w-auto bg-[#06BBCC] hover:bg-[#059aa8] disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
-                  >
-                    {isRequestingReview ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Requesting...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send size={18} />
-                        <span>Request Expert Review</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-        </div>
 
         {/* Action Buttons */}
         <div className="mt-8 flex justify-center gap-4">

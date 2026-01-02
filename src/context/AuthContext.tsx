@@ -36,7 +36,8 @@ export const useAuth = () => {
 const setCookie = (name: string, value: string, days: number = 7) => {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  console.log('🍪 Cookie set:', name, 'Value length:', value?.length);
 };
 
 const getCookie = (name: string): string | null => {
@@ -103,6 +104,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Login function
   const login = (authToken: string, userData: User) => {
+    console.log('🔑 AuthContext - login() called with:', {
+      tokenLength: authToken?.length,
+      userId: userData?.id,
+      userEmail: userData?.email,
+      userRoles: userData?.roles,
+    });
+
     setToken(authToken);
     setUser(userData);
 
@@ -110,6 +118,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setCookie('authToken', authToken, 7); // 7 days
     localStorage.setItem('authToken', authToken);
     localStorage.setItem('user', JSON.stringify(userData));
+
+    console.log('✅ AuthContext - Data saved to localStorage and cookies');
+    console.log('✅ AuthContext - isAuthenticated:', !!(userData && authToken));
   };
 
   // Logout function

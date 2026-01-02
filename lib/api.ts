@@ -18,9 +18,24 @@ function isTokenExpired(token: string): boolean {
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('authToken');
 
+  console.log('🌐 API Interceptor - Request:', {
+    url: config.url,
+    hasToken: !!token,
+    tokenLength: token?.length,
+  });
+
   if (token) {
     // Check if expired
-    if (isTokenExpired(token)) {
+    const expired = isTokenExpired(token);
+    console.log('🌐 API Interceptor - Token check:', {
+      expired,
+      token: token.substring(0, 20) + '...',
+    });
+
+    if (expired) {
+      console.error(
+        '❌ API Interceptor - Token expired, redirecting to signin'
+      );
       // Clear everything
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
@@ -32,6 +47,9 @@ api.interceptors.request.use(config => {
 
     // Add token to request
     config.headers.Authorization = `Bearer ${token}`;
+    console.log('✅ API Interceptor - Token added to request');
+  } else {
+    console.warn('⚠️ API Interceptor - No token found in localStorage');
   }
 
   return config;
@@ -42,6 +60,9 @@ api.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
+      console.error(
+        '❌ API Interceptor - 401 Unauthorized, redirecting to signin'
+      );
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       document.cookie =

@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         hostname: 'cbt.ieltsprepandpractice.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**.fbcdn.net',
+        pathname: '/**',
+      },
     ],
   },
 };

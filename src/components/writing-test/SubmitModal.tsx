@@ -30,15 +30,36 @@ export default function SubmitModal({
         className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all`}
       >
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-            <CheckCircle size={24} className="text-green-600" />
+          <div
+            className={`w-12 h-12 rounded-full ${isSubmitting ? 'bg-blue-100' : 'bg-green-100'} flex items-center justify-center`}
+          >
+            {isSubmitting ? (
+              <Loader2 size={24} className="text-blue-600 animate-spin" />
+            ) : (
+              <CheckCircle size={24} className="text-green-600" />
+            )}
           </div>
-          <h3 className="text-2xl font-bold">Submit Test?</h3>
+          <h3 className="text-2xl font-bold">
+            {isSubmitting ? 'Evaluating Your Answers...' : 'Submit Test?'}
+          </h3>
         </div>
 
         <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-6`}>
-          Are you sure you want to submit your test? You won&apos;t be able to
-          make any changes after submission.
+          {isSubmitting ? (
+            <>
+              Please wait while our AI evaluates your writing. This usually
+              takes 3-5 seconds.
+              <br />
+              <strong className="text-orange-500">
+                Do not close this window or press back.
+              </strong>
+            </>
+          ) : (
+            <>
+              Are you sure you want to submit your test? You won&apos;t be able
+              to make any changes after submission.
+            </>
+          )}
         </p>
 
         <div
@@ -80,10 +101,10 @@ export default function SubmitModal({
             {isSubmitting ? (
               <>
                 <Loader2 size={20} className="animate-spin" />
-                <span>Submitting...</span>
+                <span>Evaluating...</span>
               </>
             ) : (
-              'Confirm'
+              'Confirm & Submit'
             )}
           </button>
         </div>

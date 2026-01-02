@@ -4,7 +4,12 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('authToken')?.value;
   const { pathname } = request.nextUrl;
-  console.log('Middleware invoked for path:', pathname);
+  console.log('🛡️ Middleware - Path:', pathname);
+  console.log('🛡️ Middleware - Has authToken cookie:', !!token);
+  console.log(
+    '🛡️ Middleware - All cookies:',
+    request.cookies.getAll().map(c => c.name)
+  );
 
   // Define public routes (routes that don't require authentication)
   const publicRoutes = [
@@ -29,6 +34,7 @@ export function middleware(request: NextRequest) {
 
   // If user is not authenticated and trying to access protected route
   if (!token && !isPublicRoute) {
+    console.log('🔒 Middleware - No token, redirecting to /signin');
     const signInUrl = new URL('/signin', request.url);
     signInUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(signInUrl);
@@ -39,9 +45,13 @@ export function middleware(request: NextRequest) {
     token &&
     (pathname.startsWith('/signin') || pathname.startsWith('/signup'))
   ) {
+    console.log(
+      '✅ Middleware - User authenticated, redirecting to /dashboard'
+    );
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
+  console.log('✅ Middleware - Allowing access to:', pathname);
   return NextResponse.next();
 }
 

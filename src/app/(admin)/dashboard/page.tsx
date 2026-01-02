@@ -1,57 +1,18 @@
-import type { Metadata } from 'next';
-import { EcommerceMetrics } from '@/components/ecommerce/EcommerceMetrics';
-import React from 'react';
-import MonthlyTarget from '@/components/ecommerce/MonthlyTarget';
-import MonthlySalesChart from '@/components/ecommerce/MonthlySalesChart';
-import StatisticsChart from '@/components/ecommerce/StatisticsChart';
-import RecentOrders from '@/components/ecommerce/RecentOrders';
-import DemographicCard from '@/components/ecommerce/DemographicCard';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'IELTS Writing Practice Tests | AI + Expert Review',
-  description:
-    'Master IELTS Writing with AI-powered instant feedback and expert human review. Practice Academic and General Training tests under real exam conditions.',
-  keywords: [
-    'IELTS',
-    'Writing Test',
-    'IELTS Practice',
-    'Academic Writing',
-    'General Training',
-    'AI Feedback',
-    'Expert Review',
-  ],
-  openGraph: {
-    title: 'IELTS Writing Practice Tests | AI + Expert Review',
-    description:
-      'Master IELTS Writing with AI-powered instant feedback and expert human review.',
-    type: 'website',
-  },
-};
+import { useAuth } from '@/context/AuthContext';
+import AdminDashboard from '@/components/dashboard/AdminDashboard';
+import UserDashboard from '@/components/dashboard/UserDashboard';
 
-export default function Ecommerce() {
-  return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12 space-y-6 xl:col-span-7">
-        <EcommerceMetrics />
+export default function Dashboard() {
+  const { user } = useAuth();
 
-        <MonthlySalesChart />
-      </div>
+  // Check if user is Admin
+  const isAdmin = user?.roles?.includes('Admin');
 
-      <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget />
-      </div>
+  if (isAdmin) {
+    return <AdminDashboard />;
+  }
 
-      <div className="col-span-12">
-        <StatisticsChart />
-      </div>
-
-      <div className="col-span-12 xl:col-span-5">
-        <DemographicCard />
-      </div>
-
-      <div className="col-span-12 xl:col-span-7">
-        <RecentOrders />
-      </div>
-    </div>
-  );
+  return <UserDashboard />;
 }
