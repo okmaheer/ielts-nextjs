@@ -7,6 +7,7 @@ import {
   type SubmissionDetails,
   type TaskEvaluation,
 } from '../../../../../../lib/services/writingTestService';
+import { expertReviewService } from '../../../../../../lib/services/expertReviewService';
 import {
   ChevronDown,
   ChevronUp,
@@ -31,6 +32,7 @@ export default function WritingTestResults() {
   const [expandedCriteria, setExpandedCriteria] = useState<{
     [key: string]: boolean;
   }>({});
+  const [isRequestingReview, setIsRequestingReview] = useState(false);
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -58,6 +60,24 @@ export default function WritingTestResults() {
 
   const toggleCriteria = (key: string) => {
     setExpandedCriteria(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleRequestExpertReview = async () => {
+    try {
+      setIsRequestingReview(true);
+      await expertReviewService.requestReview(submissionId);
+
+      // Refresh submission to get updated status
+      const data = await writingTestService.getSubmissionDetails(submissionId);
+      setSubmission(data);
+
+      alert('Expert review requested successfully!');
+    } catch (err) {
+      console.error('Error requesting expert review:', err);
+      alert('Failed to request expert review. Please try again.');
+    } finally {
+      setIsRequestingReview(false);
+    }
   };
 
   const getBandColor = (band: number): string => {
@@ -585,6 +605,24 @@ export default function WritingTestResults() {
                     : 'Task 2'}
                 </button>
               )}
+
+              {/* Request Expert Review Button - Show only if both tasks are complete and review not requested */}
+              {submission.ai_evaluation?.task1 &&
+                submission.ai_evaluation.task1.overall_band > 0 &&
+                submission.ai_evaluation?.task2 &&
+                submission.ai_evaluation.task2.overall_band > 0 &&
+                !submission.expert_feedback_sent && (
+                  <button
+                    onClick={handleRequestExpertReview}
+                    disabled={isRequestingReview}
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    <Award size={20} />
+                    {isRequestingReview
+                      ? 'Requesting...'
+                      : 'Request Expert Review'}
+                  </button>
+                )}
             </>
           )}
           <button
