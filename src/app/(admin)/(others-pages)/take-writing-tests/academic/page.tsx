@@ -4,8 +4,9 @@ import ComponentCard from '@/components/common/ComponentCard';
 import PageBreadcrumb from '@/components/common/PageBreadCrumb';
 import TestList from '@/components/takewritingtest/TestList';
 export const metadata: Metadata = {
-  title: 'Writing Test List IELTS Prep & Practice',
-  description: 'List of Writing Tests for ielts',
+  title: 'IELTS Academic Writing Tests | IELTS Prep & Practice',
+  description:
+    'Browse and take IELTS Academic Writing tests with AI evaluation and expert review.',
 };
 
 export default function academicTestList() {

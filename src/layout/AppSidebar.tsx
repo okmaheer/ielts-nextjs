@@ -108,40 +108,66 @@ const AppSidebar: React.FC = () => {
                       <ul className="mt-2 space-y-1 ml-9">
                         {nav.subItems.map(subItem => (
                           <li key={subItem.name}>
-                            <Link
-                              href={subItem.path}
-                              className={`menu-dropdown-item ${
-                                isActive(subItem.path)
-                                  ? 'menu-dropdown-item-active'
-                                  : 'menu-dropdown-item-inactive'
-                              }`}
-                            >
-                              {subItem.name}
-                              <span className="flex items-center gap-1 ml-auto">
-                                {subItem.new && (
-                                  <span
-                                    className={`ml-auto ${
-                                      isActive(subItem.path)
-                                        ? 'menu-dropdown-badge-active'
-                                        : 'menu-dropdown-badge-inactive'
-                                    } menu-dropdown-badge`}
+                            {subItem.external ? (
+                              <a
+                                href={subItem.path}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="menu-dropdown-item menu-dropdown-item-inactive"
+                              >
+                                {subItem.name}
+                                <span className="ml-auto">
+                                  <svg
+                                    className="w-3 h-3 opacity-50"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
                                   >
-                                    new
-                                  </span>
-                                )}
-                                {subItem.pro && (
-                                  <span
-                                    className={`ml-auto ${
-                                      isActive(subItem.path)
-                                        ? 'menu-dropdown-badge-active'
-                                        : 'menu-dropdown-badge-inactive'
-                                    } menu-dropdown-badge`}
-                                  >
-                                    pro
-                                  </span>
-                                )}
-                              </span>
-                            </Link>
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                    />
+                                  </svg>
+                                </span>
+                              </a>
+                            ) : (
+                              <Link
+                                href={subItem.path}
+                                className={`menu-dropdown-item ${
+                                  isActive(subItem.path)
+                                    ? 'menu-dropdown-item-active'
+                                    : 'menu-dropdown-item-inactive'
+                                }`}
+                              >
+                                {subItem.name}
+                                <span className="flex items-center gap-1 ml-auto">
+                                  {subItem.new && (
+                                    <span
+                                      className={`ml-auto ${
+                                        isActive(subItem.path)
+                                          ? 'menu-dropdown-badge-active'
+                                          : 'menu-dropdown-badge-inactive'
+                                      } menu-dropdown-badge`}
+                                    >
+                                      new
+                                    </span>
+                                  )}
+                                  {subItem.pro && (
+                                    <span
+                                      className={`ml-auto ${
+                                        isActive(subItem.path)
+                                          ? 'menu-dropdown-badge-active'
+                                          : 'menu-dropdown-badge-inactive'
+                                      } menu-dropdown-badge`}
+                                    >
+                                      pro
+                                    </span>
+                                  )}
+                                </span>
+                              </Link>
+                            )}
                           </li>
                         ))}
                       </ul>

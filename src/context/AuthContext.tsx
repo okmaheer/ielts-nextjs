@@ -1,5 +1,12 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useRouter } from 'next/navigation';
 
 type User = {
@@ -10,6 +17,7 @@ type User = {
   profilePicture?: string;
   roles: string[];
   isAdmin: boolean;
+  isUserPaid: boolean;
 };
 
 type AuthContextType = {
@@ -37,7 +45,6 @@ const setCookie = (name: string, value: string, days: number = 7) => {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
-  console.log('🍪 Cookie set:', name, 'Value length:', value?.length);
 };
 
 const getCookie = (name: string): string | null => {
@@ -80,6 +87,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           if (parsedUser.isAdmin === undefined) {
             parsedUser.isAdmin = parsedUser.roles.includes('Admin');
           }
+          if (parsedUser.isUserPaid === undefined) {
+            parsedUser.isUserPaid = false;
+          }
 
           setUser(parsedUser);
 
@@ -103,14 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   // Login function
-  const login = (authToken: string, userData: User) => {
-    console.log('🔑 AuthContext - login() called with:', {
-      tokenLength: authToken?.length,
-      userId: userData?.id,
-      userEmail: userData?.email,
-      userRoles: userData?.roles,
-    });
-
+  const login = useCallback((authToken: string, userData: User) => {
     setToken(authToken);
     setUser(userData);
 
@@ -118,13 +121,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setCookie('authToken', authToken, 7); // 7 days
     localStorage.setItem('authToken', authToken);
     localStorage.setItem('user', JSON.stringify(userData));
-
-    console.log('✅ AuthContext - Data saved to localStorage and cookies');
-    console.log('✅ AuthContext - isAuthenticated:', !!(userData && authToken));
-  };
+  }, []);
 
   // Logout function
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     setUser(null);
 
@@ -134,26 +134,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.removeItem('user');
 
     router.push('/signin');
-  };
+  }, [router]);
 
   // Update user data
-  const updateUser = (userData: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
+  const updateUser = useCallback((userData: Partial<User>) => {
+    setUser(prev => {
+      if (!prev) return prev;
+      const updatedUser = { ...prev, ...userData };
       localStorage.setItem('user', JSON.stringify(updatedUser));
-    }
-  };
+      return updatedUser;
+    });
+  }, []);
 
-  const value = {
-    user,
-    token,
-    isAuthenticated: !!user && !!token,
-    isLoading,
-    login,
-    logout,
-    updateUser,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      token,
+      isAuthenticated: !!user && !!token,
+      isLoading,
+      login,
+      logout,
+      updateUser,
+    }),
+    [user, token, isLoading, login, logout, updateUser]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

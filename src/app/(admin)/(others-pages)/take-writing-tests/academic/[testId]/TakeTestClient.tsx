@@ -1,0 +1,557 @@
+'use client';
+
+import { useEffect, useState, useRef } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { BookOpen, FileText, AlertCircle, CheckCircle } from 'lucide-react';
+import {
+  writingTestService,
+  WritingTestWithQuestions,
+  WritingQuestion,
+} from '../../../../../../../lib/services/writingTestService';
+import TestHeader from '@/components/writing-test/TestHeader';
+import SubmitModal from '@/components/writing-test/SubmitModal';
+import TestFooter from '@/components/writing-test/TestFooter';
+import AuthRequiredModal from '@/components/auth/AuthRequiredModal';
+
+export default function TakeTestClient() {
+  const params = useParams();
+  const router = useRouter();
+  const testId = params.testId as string;
+
+  const [currentTask, setCurrentTask] = useState<number>(1);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [completedTasks, setCompletedTasks] = useState<Record<number, boolean>>(
+    {}
+  );
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [fontSize, setFontSize] = useState<number>(16);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [showSubmitModal, setShowSubmitModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [testData, setTestData] = useState<WritingTestWithQuestions | null>(
+    null
+  );
+
+  // Timer tracking
+  const hasReachedZeroRef = useRef<boolean>(false); // Track if timer has reached 0
+  const timerStartedRef = useRef<boolean>(false); // Track if timer has started
+
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+
+  // Check authentication FIRST - TOP PRIORITY
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        setIsCheckingAuth(true);
+
+        // Check if authToken cookie exists
+        const cookies = document.cookie.split(';');
+        const authToken = cookies.find(cookie =>
+          cookie.trim().startsWith('authToken=')
+        );
+
+        if (!authToken) {
+          setIsAuthenticated(false);
+          setIsCheckingAuth(false);
+          return;
+        }
+
+        setIsAuthenticated(true);
+      } catch (err) {
+        console.error('Auth check failed:', err);
+        setIsAuthenticated(false);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // Fetch test data from API - ONLY if authenticated
+  useEffect(() => {
+    if (!isAuthenticated || isCheckingAuth) return;
+
+    const fetchTestData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Check if user has already submitted this test
+        const userSubmissions = await writingTestService.getUserSubmissions();
+        const existingSubmission = userSubmissions.find(
+          submission => submission.test_id === testId
+        );
+
+        let hasExistingTask = false;
+
+        if (existingSubmission) {
+          // Parse AI evaluation to check completion status
+          const aiEval = existingSubmission.ai_evaluation;
+          const task1Completed = aiEval?.task1 && aiEval.task1.overall_band > 0;
+          const task2Completed = aiEval?.task2 && aiEval.task2.overall_band > 0;
+
+          // Check if both tasks are completed
+          if (task1Completed && task2Completed) {
+            // Both tasks done, redirect to results
+            router.push(`/writing-test-results/${existingSubmission.id}`);
+            return;
+          }
+
+          // Pre-fill answers for completed tasks
+          const prefilledAnswers: Record<number, string> = {};
+          const completed: Record<number, boolean> = {};
+
+          if (existingSubmission.task1_answer && task1Completed) {
+            prefilledAnswers[1] = existingSubmission.task1_answer;
+            completed[1] = true;
+            hasExistingTask = true;
+          }
+          if (existingSubmission.task2_answer && task2Completed) {
+            prefilledAnswers[2] = existingSubmission.task2_answer;
+            completed[2] = true;
+            hasExistingTask = true;
+          }
+
+          setAnswers(prefilledAnswers);
+          setCompletedTasks(completed);
+
+          // Set current task to the first incomplete task
+          if (!task1Completed) {
+            setCurrentTask(1);
+          } else if (!task2Completed) {
+            setCurrentTask(2);
+          }
+        }
+
+        const data = await writingTestService.getTestDetails(Number(testId));
+        setTestData(data);
+
+        // Set timer: 40 minutes if one task already completed, 60 minutes for fresh attempt
+        if (hasExistingTask) {
+          setTimeRemaining(2400); // 40 minutes for second task
+        } else {
+          setTimeRemaining(3600); // 60 minutes for fresh attempt
+        }
+      } catch (err) {
+        console.error('Error fetching test:', err);
+        setError('Failed to load test. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (testId) {
+      fetchTestData();
+    }
+  }, [testId, isAuthenticated, isCheckingAuth, router]);
+
+  // Timer countdown - runs every second
+  useEffect(() => {
+    // Don't start timer if: no data, still loading, not authenticated, or timer is 0
+    if (!testData || isLoading || !isAuthenticated || timeRemaining === 0)
+      return;
+
+    // Mark timer as started
+    if (!timerStartedRef.current && timeRemaining > 0) {
+      timerStartedRef.current = true;
+    }
+
+    const timer = setInterval(() => {
+      setTimeRemaining(prev => {
+        const newTime = prev - 1;
+
+        // When timer reaches 0, submit the test
+        if (newTime <= 0) {
+          clearInterval(timer);
+
+          // Only submit once using ref
+          if (!hasReachedZeroRef.current) {
+            hasReachedZeroRef.current = true;
+            // Auto-submit when timer reaches 0
+            submitTest();
+          }
+
+          return 0;
+        }
+
+        return newTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [testData, isLoading, isAuthenticated, timeRemaining]);
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const countWords = (text?: string): number => {
+    if (!text) return 0;
+    return text
+      .trim()
+      .split(/\s+/)
+      .filter((word: string) => word.length > 0).length;
+  };
+
+  const handleAnswerChange = (text: string, taskNumber: number) => {
+    if (!testData) return;
+    const question = testData.questions.find(
+      (q: WritingQuestion) => q.task_number === taskNumber
+    );
+    if (!question) return;
+
+    const wordCount = countWords(text);
+    if (wordCount <= question.word_limit) {
+      setAnswers(prev => ({ ...prev, [taskNumber]: text }));
+    }
+  };
+
+  const getWordCountStatus = (
+    count: number,
+    minWords: number,
+    maxWords: number
+  ) => {
+    if (count === 0)
+      return {
+        color: 'text-gray-400',
+        hasIcon: false,
+        message: '',
+        isAlert: false,
+      };
+    if (count > maxWords)
+      return {
+        color: 'text-red-500',
+        hasIcon: true,
+        isAlert: true,
+        message: 'Exceeds limit',
+      };
+    if (count < minWords)
+      return {
+        color: 'text-orange-500',
+        hasIcon: true,
+        isAlert: true,
+        message: 'Below minimum',
+      };
+    return {
+      color: 'text-green-500',
+      hasIcon: true,
+      isAlert: false,
+      message: 'Good',
+    };
+  };
+
+  const handleSubmit = () => {
+    // Check if at least one task has content
+    const hasTask1Content = countWords(answers[1] || '') > 0;
+    const hasTask2Content = countWords(answers[2] || '') > 0;
+
+    if (!hasTask1Content && !hasTask2Content) {
+      alert(
+        'You must complete at least one task before submitting. Both tasks cannot be empty.'
+      );
+      return;
+    }
+
+    // Validate word count for tasks that have content (not completely empty)
+    for (const question of testData?.questions || []) {
+      const minWords = Math.ceil(question.word_limit * 0.5);
+      const wordCount = countWords(answers[question.task_number] || '');
+
+      // If task has content but doesn't meet minimum, show error
+      if (wordCount > 0 && wordCount < minWords) {
+        alert(
+          `Task ${question.task_number} has ${wordCount} words, but needs at least ${minWords} words (50% of ${question.word_limit}). Either complete the task or leave it completely empty.`
+        );
+        return;
+      }
+    }
+
+    setShowSubmitModal(true);
+  };
+
+  const submitTest = async () => {
+    if (!testData || isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      const payload = {
+        test_id: testData.test.id,
+        time_taken: 3600 - timeRemaining, // 60 minutes in seconds
+        answers: testData.questions.map(q => ({
+          task_number: q.task_number,
+          answer_text: answers[q.task_number] || '',
+          word_count: countWords(answers[q.task_number] || ''),
+        })),
+      };
+
+      const result = await writingTestService.submitWritingTest(payload);
+      // Redirect to results page (modal will disappear automatically)
+      router.push(`/writing-test-results/${result.data.submission_id}`);
+    } catch (err) {
+      console.error('Error submitting test:', err);
+      setIsSubmitting(false);
+      setShowSubmitModal(false); // Close modal on error
+      alert('Failed to submit test. Please try again.');
+    }
+  };
+
+  const confirmSubmit = async () => {
+    // Don't close modal - keep it open to show loading state
+    // Modal will disappear when we redirect to results page
+    await submitTest();
+  };
+
+  const handleDashboardClick = () => {
+    router.push('/dashboard');
+  };
+
+  const handleLogout = () => {
+    router.push('/signin');
+  };
+
+  // Show auth modal if not authenticated
+  if (!isAuthenticated && !isCheckingAuth) {
+    return <AuthRequiredModal show={true} />;
+  }
+
+  // Checking authentication state
+  if (isCheckingAuth) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#06BBCC] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading test data
+  if (isLoading) {
+    return (
+      <div
+        className={`flex items-center justify-center h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#06BBCC] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p
+            className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-lg`}
+          >
+            Loading test...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error State
+  if (error) {
+    return (
+      <div
+        className={`flex items-center justify-center h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}
+      >
+        <div className="text-center">
+          <p className="text-red-500 text-lg mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#06BBCC] hover:bg-[#059aa8] text-white px-6 py-2 rounded-lg"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // No Data State
+  if (!testData) {
+    return null;
+  }
+
+  // Filter out completed tasks - user should only see incomplete tasks
+  const availableQuestions = testData.questions.filter(
+    (q: WritingQuestion) => !completedTasks[q.task_number]
+  );
+
+  // SAFETY: If current task is completed, switch to the first available task
+  let effectiveCurrentTask = currentTask;
+  if (completedTasks[currentTask] && availableQuestions.length > 0) {
+    effectiveCurrentTask = availableQuestions[0].task_number;
+    setCurrentTask(effectiveCurrentTask);
+  }
+
+  const currentQuestion = availableQuestions.find(
+    (q: WritingQuestion) => q.task_number === effectiveCurrentTask
+  );
+  const currentAnswer = answers[currentTask] || '';
+  const currentWordCount = countWords(currentAnswer);
+  // Calculate minimum words as 50% of word_limit
+  const minWords = Math.ceil((currentQuestion?.word_limit || 0) * 0.5);
+  const wordCountStatus = getWordCountStatus(
+    currentWordCount,
+    minWords,
+    currentQuestion?.word_limit || 0
+  );
+
+  return (
+    <div
+      className={`flex flex-col h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}
+    >
+      <TestHeader
+        timeRemaining={timeRemaining}
+        darkMode={darkMode}
+        fontSize={fontSize}
+        showSettings={showSettings}
+        setShowSettings={setShowSettings}
+        setDarkMode={setDarkMode}
+        setFontSize={setFontSize}
+        onDashboardClick={handleDashboardClick}
+        onLogout={handleLogout}
+      />
+
+      <main className="flex-1 overflow-hidden">
+        <div className="h-full w-full mx-auto p-2 sm:p-4 md:p-6">
+          <div
+            className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg sm:rounded-2xl shadow-lg h-full flex flex-col overflow-hidden`}
+          >
+            <div className="px-3 sm:px-4 py-1.5 sm:py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between gap-2 bg-gradient-to-r from-[#06BBCC]/10 to-transparent">
+              <h2 className="text-base sm:text-lg font-bold">
+                Task {currentTask}
+              </h2>
+              <div
+                className={`${darkMode ? 'bg-gray-700' : 'bg-gray-100'} px-2.5 sm:px-3 py-1 rounded-md`}
+              >
+                <span className="text-xs font-medium">
+                  Min: {minWords} words
+                </span>
+              </div>
+            </div>
+
+            <div className="flex-1 flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 p-3 sm:p-4 overflow-auto lg:overflow-hidden">
+              <div
+                className={`${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'} rounded-lg sm:rounded-xl p-3 sm:p-4 overflow-auto border ${darkMode ? 'border-gray-600' : 'border-gray-200'} flex-shrink-0`}
+              >
+                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#06BBCC] flex items-center justify-center">
+                    <BookOpen
+                      size={12}
+                      className="sm:w-3.5 sm:h-3.5 text-white"
+                    />
+                  </div>
+                  <h3 className="text-sm sm:text-base font-semibold">
+                    Question
+                  </h3>
+                </div>
+                <div
+                  style={{ fontSize: `${fontSize}px` }}
+                  className="whitespace-pre-line leading-relaxed"
+                >
+                  {currentQuestion?.question_text}
+                </div>
+                {currentQuestion?.image_url && (
+                  <div className="mt-6 relative w-full h-auto">
+                    <Image
+                      src={currentQuestion.image_url}
+                      alt="Task visual"
+                      width={800}
+                      height={600}
+                      className="w-full h-auto rounded-xl border-2 border-gray-300 shadow-md"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col overflow-hidden flex-shrink-0 min-h-[300px]">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-2 sm:mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#06BBCC] flex items-center justify-center">
+                      <FileText
+                        size={12}
+                        className="sm:w-3.5 sm:h-3.5 text-white"
+                      />
+                    </div>
+                    <h3 className="text-sm sm:text-base font-semibold">
+                      Your Answer
+                    </h3>
+                  </div>
+                  <div
+                    className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}
+                  >
+                    {wordCountStatus.hasIcon &&
+                      (wordCountStatus.isAlert ? (
+                        <AlertCircle
+                          size={14}
+                          className={`sm:w-4 sm:h-4 ${wordCountStatus.color}`}
+                        />
+                      ) : (
+                        <CheckCircle
+                          size={14}
+                          className={`sm:w-4 sm:h-4 ${wordCountStatus.color}`}
+                        />
+                      ))}
+                    <span
+                      className={`text-xs sm:text-sm font-semibold ${wordCountStatus.color}`}
+                    >
+                      {currentWordCount} / {currentQuestion?.word_limit}
+                    </span>
+                    {wordCountStatus.message && (
+                      <span
+                        className={`text-xs hidden sm:inline ${wordCountStatus.color}`}
+                      >
+                        • {wordCountStatus.message}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <textarea
+                  value={currentAnswer}
+                  onChange={e =>
+                    handleAnswerChange(e.target.value, currentTask)
+                  }
+                  readOnly={completedTasks[currentTask]}
+                  style={{ fontSize: `${fontSize}px` }}
+                  className={`flex-1 min-h-[250px] ${completedTasks[currentTask] ? (darkMode ? 'bg-gray-800 border-gray-700 text-gray-400' : 'bg-gray-100 border-gray-400 text-gray-600 cursor-not-allowed') : darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'} border-2 rounded-lg sm:rounded-xl p-3 sm:p-4 ${!completedTasks[currentTask] && 'focus:outline-none focus:ring-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]'} resize-none transition-all`}
+                  placeholder={
+                    completedTasks[currentTask]
+                      ? 'This task has been completed and submitted'
+                      : 'Start typing your answer here...'
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <TestFooter
+        currentTask={currentTask}
+        totalTasks={availableQuestions.length}
+        availableTaskNumbers={availableQuestions.map(q => q.task_number)}
+        darkMode={darkMode}
+        onTaskChange={setCurrentTask}
+        onSubmit={handleSubmit}
+      />
+
+      <SubmitModal
+        show={showSubmitModal}
+        darkMode={darkMode}
+        task1Words={countWords(answers[1] || '')}
+        task2Words={countWords(answers[2] || '')}
+        timeRemaining={formatTime(timeRemaining)}
+        isSubmitting={isSubmitting}
+        onCancel={() => setShowSubmitModal(false)}
+        onConfirm={confirmSubmit}
+      />
+    </div>
+  );
+}

@@ -8,6 +8,7 @@ import AuthGuard from '@/components/auth/AuthGuard';
 
 const outfit = Outfit({
   subsets: ['latin'],
+  display: 'swap',
 });
 
 export default function RootLayout({

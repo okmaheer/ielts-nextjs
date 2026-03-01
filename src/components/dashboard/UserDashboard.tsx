@@ -12,10 +12,21 @@ import {
   Target,
   Clock,
   BookOpen,
+  Crown,
+  ArrowRight,
 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useModal } from '@/hooks/useModal';
+import PremiumModal from '@/components/premium/PremiumModal';
 
 export default function UserDashboard() {
   const router = useRouter();
+  const { user } = useAuth();
+  const {
+    isOpen: isPremiumOpen,
+    openModal: openPremium,
+    closeModal: closePremium,
+  } = useModal();
   const [data, setData] = useState<UserDashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -93,6 +104,29 @@ export default function UserDashboard() {
           Track your progress and performance
         </p>
       </div>
+
+      {/* Premium Upgrade Banner */}
+      {user && !user.isUserPaid && (
+        <button
+          onClick={openPremium}
+          className="w-full rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 p-4 shadow-md transition-all hover:shadow-lg hover:brightness-105"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+                <Crown className="h-5 w-5 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="font-bold text-white">Upgrade to Premium</p>
+                <p className="text-sm text-white/80">
+                  Unlock all tests and get full access
+                </p>
+              </div>
+            </div>
+            <ArrowRight className="h-5 w-5 text-white" />
+          </div>
+        </button>
+      )}
 
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -398,6 +432,9 @@ export default function UserDashboard() {
           )}
         </div>
       </div>
+
+      {/* Premium Modal */}
+      <PremiumModal isOpen={isPremiumOpen} onClose={closePremium} />
     </div>
   );
 }

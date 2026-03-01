@@ -1,7 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'standalone',
+  compress: true,
+  productionBrowserSourceMaps: false,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -10,6 +12,8 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
+    formats: ['image/webp'],
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       {
         protocol: 'https',

@@ -3,7 +3,7 @@
 'use client';
 
 import Button from '@/components/ui/button/Button';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   writingTestService,
   WritingTest,
@@ -19,8 +19,12 @@ import {
   CheckCircle,
   Award,
   Eye,
+  Crown,
+  Lock,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import PremiumModal from '@/components/premium/PremiumModal';
+import { usePremium } from '@/hooks/usePremium';
 
 interface TestListProps {
   category: TestCategory;
@@ -49,9 +53,20 @@ export default function TestList({ category }: TestListProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const premiumAutoShown = useRef(false);
 
   const config = categoryConfig[category];
   const IconComponent = config.icon;
+
+  const {
+    isUserPaid,
+    isTestLocked,
+    isPaidTest,
+    hasCompletedAllFreeTests,
+    isPremiumModalOpen,
+    openPremiumModal,
+    closePremiumModal,
+  } = usePremium();
 
   const fetchTests = useCallback(async () => {
     try {
@@ -60,7 +75,6 @@ export default function TestList({ category }: TestListProps) {
       const data = await writingTestService.getTestsByCategory(category);
       setTests(data);
     } catch (err) {
-      // Narrow unknown error to a useful shape without using `any`
       const e = err as
         | { message?: string; response?: { data?: { message?: string } } }
         | undefined;
@@ -72,11 +86,32 @@ export default function TestList({ category }: TestListProps) {
       setLoading(false);
     }
   }, [category]);
+
   useEffect(() => {
     fetchTests();
   }, [fetchTests]);
+
+  // Auto-show premium modal when all free tests are completed
+  useEffect(() => {
+    if (
+      !loading &&
+      tests.length > 0 &&
+      !isUserPaid &&
+      !premiumAutoShown.current
+    ) {
+      if (hasCompletedAllFreeTests(tests)) {
+        premiumAutoShown.current = true;
+        openPremiumModal();
+      }
+    }
+  }, [loading, tests, isUserPaid, hasCompletedAllFreeTests, openPremiumModal]);
+
   const handleStartTest = (testId: number) => {
-    // first show instructions, then user will proceed to the actual test
+    const test = tests.find(t => t.id === testId);
+    if (test && isTestLocked(test)) {
+      openPremiumModal();
+      return;
+    }
     router.push(`${config.routePrefix}/${testId}/instructions`);
   };
 
@@ -159,7 +194,7 @@ export default function TestList({ category }: TestListProps) {
         </div>
       )}
 
-      {/* Tests Grid - Professional Design */}
+      {/* Tests Grid */}
       {!loading && !error && tests.length > 0 && (
         <div className="mx-auto max-w-[1200px]">
           <div className="mb-6 flex items-center justify-between">
@@ -172,18 +207,50 @@ export default function TestList({ category }: TestListProps) {
             {tests.map(test => {
               const hasSubmission =
                 test.submission !== null && test.submission !== undefined;
-
-              // Determine if submission is complete or partial
               const isFullyCompleted =
                 hasSubmission &&
                 test.submission?.task1_completed &&
                 test.submission?.task2_completed;
+              const locked = isTestLocked(test);
+              const paid = isPaidTest(test);
 
               return (
                 <div
                   key={test.id}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl border ${hasSubmission ? 'border-green-200 bg-green-50/50 dark:border-green-900/30 dark:bg-green-900/10' : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/60'} shadow-sm transition-all duration-300 hover:shadow-xl`}
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl border ${
+                    locked
+                      ? 'border-gray-300 bg-gray-100 opacity-60 dark:border-gray-700 dark:bg-gray-800/60'
+                      : hasSubmission
+                        ? 'border-green-200 bg-green-50/50 dark:border-green-900/30 dark:bg-green-900/10'
+                        : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/60'
+                  } shadow-sm transition-all duration-300 ${locked ? 'cursor-not-allowed' : 'hover:shadow-xl'}`}
+                  onClick={() => locked && openPremiumModal()}
                 >
+                  {/* Premium Badge */}
+                  {paid && (
+                    <div
+                      className={`absolute top-4 ${hasSubmission ? 'right-28' : 'right-4'} z-10`}
+                    >
+                      <div className="flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 shadow-lg">
+                        <Crown className="h-3 w-3 text-white" />
+                        <span className="text-xs font-bold text-white">
+                          Premium
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Free Badge */}
+                  {!paid && !hasSubmission && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <div className="flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 shadow-lg">
+                        <span className="text-xs font-bold text-white">
+                          Free
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Completed/Partial Badge */}
                   {hasSubmission && (
                     <div className="absolute top-4 right-4 z-10">
@@ -230,7 +297,6 @@ export default function TestList({ category }: TestListProps) {
                   >
                     {hasSubmission && test.submission ? (
                       <div className="space-y-3">
-                        {/* Overall Band Score - Only show if both tasks completed */}
                         {test.submission.task1_completed &&
                           test.submission.task2_completed && (
                             <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm dark:bg-gray-900/50">
@@ -245,8 +311,6 @@ export default function TestList({ category }: TestListProps) {
                               </span>
                             </div>
                           )}
-
-                        {/* Task Scores with completion status */}
                         <div className="space-y-2">
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-600 dark:text-gray-400">
@@ -277,8 +341,6 @@ export default function TestList({ category }: TestListProps) {
                             )}
                           </div>
                         </div>
-
-                        {/* Submitted Date */}
                         <div className="pt-2 text-center text-xs text-gray-500 dark:text-gray-400">
                           Submitted:{' '}
                           {new Date(
@@ -288,23 +350,18 @@ export default function TestList({ category }: TestListProps) {
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {/* Duration */}
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4 text-primary" />
                           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             60 minutes
                           </span>
                         </div>
-
-                        {/* Tasks */}
                         <div className="flex items-center gap-2">
                           <Target className="h-4 w-4 text-primary" />
                           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             2 Writing Tasks
                           </span>
                         </div>
-
-                        {/* Badge */}
                         <div className="pt-2">
                           <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5">
                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -321,7 +378,20 @@ export default function TestList({ category }: TestListProps) {
                   <div
                     className={`border-t ${hasSubmission ? 'border-green-100 dark:border-green-900/20' : 'border-gray-100 dark:border-gray-800'} p-4`}
                   >
-                    {hasSubmission && test.submission ? (
+                    {locked ? (
+                      <Button
+                        onClick={e => {
+                          e.stopPropagation();
+                          openPremiumModal();
+                        }}
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-amber-500 text-amber-600 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400"
+                        startIcon={<Lock className="h-4 w-4" />}
+                      >
+                        Unlock with Premium
+                      </Button>
+                    ) : hasSubmission && test.submission ? (
                       <div className="flex gap-2">
                         <Button
                           onClick={() => handleViewResults(test.submission!.id)}
@@ -364,7 +434,13 @@ export default function TestList({ category }: TestListProps) {
 
                   {/* Subtle Hover Border */}
                   <div
-                    className={`pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ${hasSubmission ? 'ring-green-500/0 group-hover:ring-green-500/30' : 'ring-primary/0 group-hover:ring-primary/30'} transition-all duration-300`}
+                    className={`pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ${
+                      locked
+                        ? 'ring-amber-500/0'
+                        : hasSubmission
+                          ? 'ring-green-500/0 group-hover:ring-green-500/30'
+                          : 'ring-primary/0 group-hover:ring-primary/30'
+                    } transition-all duration-300`}
                   />
                 </div>
               );
@@ -373,7 +449,7 @@ export default function TestList({ category }: TestListProps) {
         </div>
       )}
 
-      {/* Info Banner - Professional */}
+      {/* Info Banner */}
       {!loading && !error && tests.length > 0 && (
         <div className="mx-auto mt-12 max-w-[800px] overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-blue-50/50 shadow-sm dark:border-blue-900/30 dark:from-blue-900/10 dark:to-blue-900/5">
           <div className="flex gap-4 p-6">
@@ -420,6 +496,9 @@ export default function TestList({ category }: TestListProps) {
           </div>
         </div>
       )}
+
+      {/* Premium Modal */}
+      <PremiumModal isOpen={isPremiumModalOpen} onClose={closePremiumModal} />
     </div>
   );
 }

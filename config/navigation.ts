@@ -17,6 +17,7 @@ export type NavItem = {
     path: string;
     pro?: boolean;
     new?: boolean;
+    external?: boolean; // Opens in new tab
     roles?: string[]; // Roles allowed to see this sub-item
   }[];
   roles?: string[]; // Roles allowed to see this menu item (empty = everyone)
@@ -63,6 +64,18 @@ export const navItems: NavItem[] = [
         path: '/take-writing-tests/general-training',
         pro: false,
         roles: ['Admin', 'User'], // Visible to all
+      },
+      {
+        name: 'Practice Academic L/R',
+        path: 'https://cbt.ieltsprepandpractice.com/academic/test?type=1',
+        external: true,
+        roles: ['Admin', 'User'],
+      },
+      {
+        name: 'Practice GT L/R',
+        path: 'https://cbt.ieltsprepandpractice.com/general-training/test?type=1',
+        external: true,
+        roles: ['Admin', 'User'],
       },
     ],
   },

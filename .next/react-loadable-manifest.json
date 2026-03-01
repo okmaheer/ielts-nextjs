@@ -1,16 +1,1 @@
-{
-  "components/charts/bar/BarChartOne.tsx -> react-apexcharts": {
-    "id": 8699,
-    "files": [
-      "static/chunks/477d4af2.342e367e990eb33e.js",
-      "static/chunks/8699.a66ea80a6958d029.js"
-    ]
-  },
-  "components/charts/line/LineChartOne.tsx -> react-apexcharts": {
-    "id": 8699,
-    "files": [
-      "static/chunks/477d4af2.342e367e990eb33e.js",
-      "static/chunks/8699.a66ea80a6958d029.js"
-    ]
-  }
-}
+{}
