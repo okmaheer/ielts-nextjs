@@ -195,188 +195,198 @@ export default function TestList({ category }: TestListProps) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {tests.map(test => {
-              const isPaid = test.type === 2;
+            {tests
+              .sort((a, b) => {
+                // Free tests (type !== 2) first, then paid tests (type === 2)
+                const aPaid = a.type === 2;
+                const bPaid = b.type === 2;
+                if (aPaid === bPaid) {
+                  return a.id - b.id; // Sort by ID for same type
+                }
+                return aPaid ? 1 : -1; // Free tests first (paid=false comes before paid=true)
+              })
+              .map(test => {
+                const isPaid = test.type === 2;
 
-              return (
-                <div
-                  key={test.id}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-all duration-300 ${
-                    isPaid
-                      ? 'border-gray-200 bg-white opacity-60 cursor-not-allowed dark:border-gray-800 dark:bg-gray-900/60'
-                      : 'border-gray-200 bg-white hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/60'
-                  }`}
-                >
-                  {/* Card Header with Gradient Accent */}
-                  <div className="relative bg-gradient-to-br from-primary/5 via-primary/3 to-transparent p-5 pb-3">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="inline-flex rounded-xl bg-white p-3 shadow-sm dark:bg-gray-900">
-                        <FileText className="h-5 w-5 text-primary" />
-                      </div>
-                      {isPaid ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                          <Crown className="h-3 w-3" />
-                          Premium
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                          Free
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="mb-2 font-bold text-gray-900 text-base leading-tight dark:text-white">
-                      {test.name}
-                    </h3>
-
-                    <p className="line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-                      {test.description}
-                    </p>
-
-                    {/* Decorative Element */}
-                    <div className="absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-primary/5 blur-2xl" />
-                  </div>
-
-                  {/* Test Info Section */}
-                  <div className="flex-1 border-t border-gray-100 bg-gray-50/50 px-5 py-3 dark:border-gray-800 dark:bg-gray-900/40">
-                    <div className="space-y-3">
-                      {/* Duration */}
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-primary" />
-                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                          60 minutes
-                        </span>
-                      </div>
-
-                      {/* Tasks */}
-                      <div className="flex items-center gap-2">
-                        <Target className="h-4 w-4 text-primary" />
-                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                          2 Writing Tasks
-                        </span>
-                      </div>
-
-                      {/* Badge */}
-                      <div className="pt-2">
-                        <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5">
-                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                          <span className="text-xs font-semibold text-primary">
-                            AI + Expert Review
-                          </span>
+                return (
+                  <div
+                    key={test.id}
+                    className={`group relative flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-all duration-300 ${
+                      isPaid
+                        ? 'border-gray-200 bg-white opacity-60 cursor-not-allowed dark:border-gray-800 dark:bg-gray-900/60'
+                        : 'border-gray-200 bg-white hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/60'
+                    }`}
+                  >
+                    {/* Card Header with Gradient Accent */}
+                    <div className="relative bg-gradient-to-br from-primary/5 via-primary/3 to-transparent p-5 pb-3">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="inline-flex rounded-xl bg-white p-3 shadow-sm dark:bg-gray-900">
+                          <FileText className="h-5 w-5 text-primary" />
                         </div>
+                        {isPaid ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                            <Crown className="h-3 w-3" />
+                            Premium
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                            Free
+                          </span>
+                        )}
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Submission Scores or Action Button */}
-                  {isPaid ? (
-                    <div className="border-t border-gray-100 p-3 dark:border-gray-800">
-                      <Button
-                        onClick={() => router.push('/signin')}
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                        startIcon={<Lock className="h-4 w-4" />}
-                      >
-                        Sign in to Unlock
-                      </Button>
+                      <h3 className="mb-2 font-bold text-gray-900 text-base leading-tight dark:text-white">
+                        {test.name}
+                      </h3>
+
+                      <p className="line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                        {test.description}
+                      </p>
+
+                      {/* Decorative Element */}
+                      <div className="absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-primary/5 blur-2xl" />
                     </div>
-                  ) : test.submission ? (
-                    <div className="border-t border-gray-100 p-3 dark:border-gray-800">
+
+                    {/* Test Info Section */}
+                    <div className="flex-1 border-t border-gray-100 bg-gray-50/50 px-5 py-3 dark:border-gray-800 dark:bg-gray-900/40">
                       <div className="space-y-3">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium text-gray-600 dark:text-gray-400">
-                            Task 1:
+                        {/* Duration */}
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-primary" />
+                          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                            60 minutes
                           </span>
-                          {test.submission.task1_completed ? (
-                            <span className="font-bold text-primary">
-                              {test.submission.task1_score}
-                            </span>
-                          ) : (
-                            <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
-                              Not Attempted
-                            </span>
-                          )}
                         </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium text-gray-600 dark:text-gray-400">
-                            Task 2:
+
+                        {/* Tasks */}
+                        <div className="flex items-center gap-2">
+                          <Target className="h-4 w-4 text-primary" />
+                          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                            2 Writing Tasks
                           </span>
-                          {test.submission.task2_completed ? (
-                            <span className="font-bold text-primary">
-                              {test.submission.task2_score}
-                            </span>
-                          ) : (
-                            <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
-                              Not Attempted
-                            </span>
-                          )}
                         </div>
-                        {test.submission.task1_completed &&
-                          test.submission.task2_completed && (
-                            <div className="flex items-center justify-between border-t border-gray-200 pt-2 dark:border-gray-700">
-                              <span className="font-semibold text-gray-700 dark:text-gray-300">
-                                Overall Score:
+
+                        {/* Badge */}
+                        <div className="pt-2">
+                          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5">
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                            <span className="text-xs font-semibold text-primary">
+                              AI + Expert Review
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Submission Scores or Action Button */}
+                    {isPaid ? (
+                      <div className="border-t border-gray-100 p-3 dark:border-gray-800">
+                        <Button
+                          onClick={() => router.push('/signin')}
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                          startIcon={<Lock className="h-4 w-4" />}
+                        >
+                          Sign in to Unlock
+                        </Button>
+                      </div>
+                    ) : test.submission ? (
+                      <div className="border-t border-gray-100 p-3 dark:border-gray-800">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium text-gray-600 dark:text-gray-400">
+                              Task 1:
+                            </span>
+                            {test.submission.task1_completed ? (
+                              <span className="font-bold text-primary">
+                                {test.submission.task1_score}
                               </span>
-                              <span className="text-lg font-bold text-primary">
-                                {test.submission.overall_band_score}
+                            ) : (
+                              <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                                Not Attempted
                               </span>
-                            </div>
-                          )}
-                        <div className="flex gap-2 mt-2">
-                          <Button
-                            onClick={() =>
-                              router.push(
-                                `/writing-test-results/${test.submission?.id}`
-                              )
-                            }
-                            variant="outline"
-                            size="sm"
-                            className="flex-1"
-                            endIcon={<ArrowRight className="h-4 w-4" />}
-                          >
-                            View Results
-                          </Button>
-                          {(!test.submission.task1_completed ||
-                            !test.submission.task2_completed) && (
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium text-gray-600 dark:text-gray-400">
+                              Task 2:
+                            </span>
+                            {test.submission.task2_completed ? (
+                              <span className="font-bold text-primary">
+                                {test.submission.task2_score}
+                              </span>
+                            ) : (
+                              <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                                Not Attempted
+                              </span>
+                            )}
+                          </div>
+                          {test.submission.task1_completed &&
+                            test.submission.task2_completed && (
+                              <div className="flex items-center justify-between border-t border-gray-200 pt-2 dark:border-gray-700">
+                                <span className="font-semibold text-gray-700 dark:text-gray-300">
+                                  Overall Score:
+                                </span>
+                                <span className="text-lg font-bold text-primary">
+                                  {test.submission.overall_band_score}
+                                </span>
+                              </div>
+                            )}
+                          <div className="flex gap-2 mt-2">
                             <Button
                               onClick={() =>
-                                handleStartTest(test.id, test.name)
+                                router.push(
+                                  `/writing-test-results/${test.submission?.id}`
+                                )
                               }
-                              variant="primary"
+                              variant="outline"
                               size="sm"
                               className="flex-1"
+                              endIcon={<ArrowRight className="h-4 w-4" />}
                             >
-                              Attempt{' '}
-                              {!test.submission.task1_completed
-                                ? 'Task 1'
-                                : 'Task 2'}
+                              View Results
                             </Button>
-                          )}
+                            {(!test.submission.task1_completed ||
+                              !test.submission.task2_completed) && (
+                              <Button
+                                onClick={() =>
+                                  handleStartTest(test.id, test.name)
+                                }
+                                variant="primary"
+                                size="sm"
+                                className="flex-1"
+                              >
+                                Attempt{' '}
+                                {!test.submission.task1_completed
+                                  ? 'Task 1'
+                                  : 'Task 2'}
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="border-t border-gray-100 p-3 dark:border-gray-800">
-                      <Button
-                        onClick={() => handleStartTest(test.id, test.name)}
-                        variant="primary"
-                        size="sm"
-                        className="w-full group-hover:shadow-md"
-                        endIcon={
-                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        }
-                      >
-                        Start Test
-                      </Button>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="border-t border-gray-100 p-3 dark:border-gray-800">
+                        <Button
+                          onClick={() => handleStartTest(test.id, test.name)}
+                          variant="primary"
+                          size="sm"
+                          className="w-full group-hover:shadow-md"
+                          endIcon={
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          }
+                        >
+                          Start Test
+                        </Button>
+                      </div>
+                    )}
 
-                  {/* Subtle Hover Border */}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-primary/0 transition-all duration-300 group-hover:ring-primary/30" />
-                </div>
-              );
-            })}
+                    {/* Subtle Hover Border */}
+                    <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-primary/0 transition-all duration-300 group-hover:ring-primary/30" />
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}

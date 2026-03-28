@@ -204,247 +204,261 @@ export default function TestList({ category }: TestListProps) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {tests.map(test => {
-              const hasSubmission =
-                test.submission !== null && test.submission !== undefined;
-              const isFullyCompleted =
-                hasSubmission &&
-                test.submission?.task1_completed &&
-                test.submission?.task2_completed;
-              const locked = isTestLocked(test);
-              const paid = isPaidTest(test);
+            {tests
+              .sort((a, b) => {
+                // Free tests (not locked) first, then paid tests
+                const aLocked = isTestLocked(a);
+                const bLocked = isTestLocked(b);
+                if (aLocked === bLocked) {
+                  return a.id - b.id; // Sort by ID for same type
+                }
+                return aLocked ? 1 : -1; // Free tests first (locked=false comes before locked=true)
+              })
+              .map(test => {
+                const hasSubmission =
+                  test.submission !== null && test.submission !== undefined;
+                const isFullyCompleted =
+                  hasSubmission &&
+                  test.submission?.task1_completed &&
+                  test.submission?.task2_completed;
+                const locked = isTestLocked(test);
+                const paid = isPaidTest(test);
 
-              return (
-                <div
-                  key={test.id}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl border ${
-                    locked
-                      ? 'border-gray-300 bg-gray-100 opacity-60 dark:border-gray-700 dark:bg-gray-800/60'
-                      : hasSubmission
-                        ? 'border-green-200 bg-green-50/50 dark:border-green-900/30 dark:bg-green-900/10'
-                        : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/60'
-                  } shadow-sm transition-all duration-300 ${locked ? 'cursor-not-allowed' : 'hover:shadow-xl'}`}
-                  onClick={() => locked && openPremiumModal()}
-                >
-                  {/* Premium Badge */}
-                  {paid && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <div className="flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 shadow-lg">
-                        <Crown className="h-3 w-3 text-white" />
-                        <span className="text-xs font-bold text-white">
-                          Premium
-                        </span>
+                return (
+                  <div
+                    key={test.id}
+                    className={`group relative flex flex-col overflow-hidden rounded-2xl border ${
+                      locked
+                        ? 'border-gray-300 bg-gray-100 opacity-60 dark:border-gray-700 dark:bg-gray-800/60'
+                        : hasSubmission
+                          ? 'border-green-200 bg-green-50/50 dark:border-green-900/30 dark:bg-green-900/10'
+                          : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/60'
+                    } shadow-sm transition-all duration-300 ${locked ? 'cursor-not-allowed' : 'hover:shadow-xl'}`}
+                    onClick={() => locked && openPremiumModal()}
+                  >
+                    {/* Premium Badge */}
+                    {paid && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <div className="flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 shadow-lg">
+                          <Crown className="h-3 w-3 text-white" />
+                          <span className="text-xs font-bold text-white">
+                            Premium
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Free Badge */}
-                  {!paid && !hasSubmission && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <div className="flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 shadow-lg">
-                        <span className="text-xs font-bold text-white">
-                          Free
-                        </span>
+                    {/* Free Badge */}
+                    {!paid && !hasSubmission && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <div className="flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 shadow-lg">
+                          <span className="text-xs font-bold text-white">
+                            Free
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Completed/Partial Badge */}
-                  {hasSubmission && (
+                    {/* Completed/Partial Badge */}
+                    {hasSubmission && (
+                      <div
+                        className={`absolute ${paid ? 'top-14' : 'top-4'} right-4 z-10`}
+                      >
+                        <div
+                          className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 shadow-lg ${isFullyCompleted ? 'bg-green-600' : 'bg-orange-500'}`}
+                        >
+                          <CheckCircle className="h-3.5 w-3.5 text-white" />
+                          <span className="text-xs font-bold text-white">
+                            {isFullyCompleted ? 'Completed' : 'Partial'}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Card Header with Gradient Accent */}
                     <div
-                      className={`absolute ${paid ? 'top-14' : 'top-4'} right-4 z-10`}
+                      className={`relative ${hasSubmission ? 'bg-gradient-to-br from-green-100/50 via-green-50/30 to-transparent dark:from-green-900/20 dark:via-green-900/10' : 'bg-gradient-to-br from-primary/5 via-primary/3 to-transparent'} p-5 pb-3`}
                     >
                       <div
-                        className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 shadow-lg ${isFullyCompleted ? 'bg-green-600' : 'bg-orange-500'}`}
+                        className={`mb-3 inline-flex rounded-xl ${hasSubmission ? 'bg-green-100 dark:bg-green-900/30' : 'bg-white dark:bg-gray-900'} p-3 shadow-sm`}
                       >
-                        <CheckCircle className="h-3.5 w-3.5 text-white" />
-                        <span className="text-xs font-bold text-white">
-                          {isFullyCompleted ? 'Completed' : 'Partial'}
-                        </span>
+                        <FileText
+                          className={`h-5 w-5 ${hasSubmission ? 'text-green-600 dark:text-green-400' : 'text-primary'}`}
+                        />
                       </div>
-                    </div>
-                  )}
 
-                  {/* Card Header with Gradient Accent */}
-                  <div
-                    className={`relative ${hasSubmission ? 'bg-gradient-to-br from-green-100/50 via-green-50/30 to-transparent dark:from-green-900/20 dark:via-green-900/10' : 'bg-gradient-to-br from-primary/5 via-primary/3 to-transparent'} p-5 pb-3`}
-                  >
-                    <div
-                      className={`mb-3 inline-flex rounded-xl ${hasSubmission ? 'bg-green-100 dark:bg-green-900/30' : 'bg-white dark:bg-gray-900'} p-3 shadow-sm`}
-                    >
-                      <FileText
-                        className={`h-5 w-5 ${hasSubmission ? 'text-green-600 dark:text-green-400' : 'text-primary'}`}
+                      <h3 className="mb-2 font-bold text-gray-900 text-base leading-tight dark:text-white">
+                        {test.name}
+                      </h3>
+
+                      <p className="line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                        {test.description}
+                      </p>
+
+                      {/* Decorative Element */}
+                      <div
+                        className={`absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full ${hasSubmission ? 'bg-green-500/10' : 'bg-primary/5'} blur-2xl`}
                       />
                     </div>
 
-                    <h3 className="mb-2 font-bold text-gray-900 text-base leading-tight dark:text-white">
-                      {test.name}
-                    </h3>
-
-                    <p className="line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-                      {test.description}
-                    </p>
-
-                    {/* Decorative Element */}
+                    {/* Test Info Section */}
                     <div
-                      className={`absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full ${hasSubmission ? 'bg-green-500/10' : 'bg-primary/5'} blur-2xl`}
-                    />
-                  </div>
-
-                  {/* Test Info Section */}
-                  <div
-                    className={`flex-1 border-t ${hasSubmission ? 'border-green-100 bg-green-50/30 dark:border-green-900/20 dark:bg-green-900/5' : 'border-gray-100 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/40'} px-5 py-3`}
-                  >
-                    {hasSubmission && test.submission ? (
-                      <div className="space-y-3">
-                        {test.submission.task1_completed &&
-                          test.submission.task2_completed && (
-                            <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm dark:bg-gray-900/50">
-                              <div className="flex items-center gap-2">
-                                <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                  Overall Band
+                      className={`flex-1 border-t ${hasSubmission ? 'border-green-100 bg-green-50/30 dark:border-green-900/20 dark:bg-green-900/5' : 'border-gray-100 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/40'} px-5 py-3`}
+                    >
+                      {hasSubmission && test.submission ? (
+                        <div className="space-y-3">
+                          {test.submission.task1_completed &&
+                            test.submission.task2_completed && (
+                              <div className="flex items-center justify-between rounded-lg bg-white p-3 shadow-sm dark:bg-gray-900/50">
+                                <div className="flex items-center gap-2">
+                                  <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Overall Band
+                                  </span>
+                                </div>
+                                <span className="font-bold text-green-600 text-xl dark:text-green-400">
+                                  {test.submission.overall_band_score.toFixed(
+                                    1
+                                  )}
                                 </span>
                               </div>
-                              <span className="font-bold text-green-600 text-xl dark:text-green-400">
-                                {test.submission.overall_band_score.toFixed(1)}
+                            )}
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600 dark:text-gray-400">
+                                Task 1
+                              </span>
+                              {test.submission.task1_completed ? (
+                                <span className="font-bold text-gray-900 dark:text-white">
+                                  {test.submission.task1_score.toFixed(1)}
+                                </span>
+                              ) : (
+                                <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                                  Not Attempted
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600 dark:text-gray-400">
+                                Task 2
+                              </span>
+                              {test.submission.task2_completed ? (
+                                <span className="font-bold text-gray-900 dark:text-white">
+                                  {test.submission.task2_score.toFixed(1)}
+                                </span>
+                              ) : (
+                                <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
+                                  Not Attempted
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="pt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+                            Submitted:{' '}
+                            {new Date(
+                              test.submission.submitted_at
+                            ).toLocaleDateString()}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-primary" />
+                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                              60 minutes
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Target className="h-4 w-4 text-primary" />
+                            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                              2 Writing Tasks
+                            </span>
+                          </div>
+                          <div className="pt-2">
+                            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5">
+                              <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                              <span className="text-xs font-semibold text-primary">
+                                AI + Expert Review
                               </span>
                             </div>
-                          )}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600 dark:text-gray-400">
-                              Task 1
-                            </span>
-                            {test.submission.task1_completed ? (
-                              <span className="font-bold text-gray-900 dark:text-white">
-                                {test.submission.task1_score.toFixed(1)}
-                              </span>
-                            ) : (
-                              <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
-                                Not Attempted
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-600 dark:text-gray-400">
-                              Task 2
-                            </span>
-                            {test.submission.task2_completed ? (
-                              <span className="font-bold text-gray-900 dark:text-white">
-                                {test.submission.task2_score.toFixed(1)}
-                              </span>
-                            ) : (
-                              <span className="text-xs font-medium text-orange-500 dark:text-orange-400">
-                                Not Attempted
-                              </span>
-                            )}
                           </div>
                         </div>
-                        <div className="pt-2 text-center text-xs text-gray-500 dark:text-gray-400">
-                          Submitted:{' '}
-                          {new Date(
-                            test.submission.submitted_at
-                          ).toLocaleDateString()}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-primary" />
-                          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            60 minutes
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Target className="h-4 w-4 text-primary" />
-                          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            2 Writing Tasks
-                          </span>
-                        </div>
-                        <div className="pt-2">
-                          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                            <span className="text-xs font-semibold text-primary">
-                              AI + Expert Review
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
 
-                  {/* Action Button */}
-                  <div
-                    className={`border-t ${hasSubmission ? 'border-green-100 dark:border-green-900/20' : 'border-gray-100 dark:border-gray-800'} p-3`}
-                  >
-                    {locked ? (
-                      <Button
-                        onClick={e => {
-                          e.stopPropagation();
-                          openPremiumModal();
-                        }}
-                        variant="outline"
-                        size="sm"
-                        className="w-full border-amber-500 text-amber-600 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400"
-                        startIcon={<Lock className="h-4 w-4" />}
-                      >
-                        Unlock with Premium
-                      </Button>
-                    ) : hasSubmission && test.submission ? (
-                      <div className="flex gap-2">
+                    {/* Action Button */}
+                    <div
+                      className={`border-t ${hasSubmission ? 'border-green-100 dark:border-green-900/20' : 'border-gray-100 dark:border-gray-800'} p-3`}
+                    >
+                      {locked ? (
                         <Button
-                          onClick={() => handleViewResults(test.submission!.id)}
+                          onClick={e => {
+                            e.stopPropagation();
+                            openPremiumModal();
+                          }}
                           variant="outline"
                           size="sm"
-                          className="flex-1 border-green-600 text-green-600 hover:bg-green-50 dark:border-green-400 dark:text-green-400 dark:hover:bg-green-900/20"
-                          endIcon={<Eye className="h-4 w-4" />}
+                          className="w-full border-amber-500 text-amber-600 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400"
+                          startIcon={<Lock className="h-4 w-4" />}
                         >
-                          View Results
+                          Unlock with Premium
                         </Button>
-                        {(!test.submission.task1_completed ||
-                          !test.submission.task2_completed) && (
+                      ) : hasSubmission && test.submission ? (
+                        <div className="flex gap-2">
                           <Button
-                            onClick={() => handleStartTest(test.id)}
-                            variant="primary"
+                            onClick={() =>
+                              handleViewResults(test.submission!.id)
+                            }
+                            variant="outline"
                             size="sm"
-                            className="flex-1"
+                            className="flex-1 border-green-600 text-green-600 hover:bg-green-50 dark:border-green-400 dark:text-green-400 dark:hover:bg-green-900/20"
+                            endIcon={<Eye className="h-4 w-4" />}
                           >
-                            Attempt{' '}
-                            {!test.submission.task1_completed
-                              ? 'Task 1'
-                              : 'Task 2'}
+                            View Results
                           </Button>
-                        )}
-                      </div>
-                    ) : (
-                      <Button
-                        onClick={() => handleStartTest(test.id)}
-                        variant="primary"
-                        size="sm"
-                        className="w-full group-hover:shadow-md"
-                        endIcon={
-                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        }
-                      >
-                        Start Test
-                      </Button>
-                    )}
-                  </div>
+                          {(!test.submission.task1_completed ||
+                            !test.submission.task2_completed) && (
+                            <Button
+                              onClick={() => handleStartTest(test.id)}
+                              variant="primary"
+                              size="sm"
+                              className="flex-1"
+                            >
+                              Attempt{' '}
+                              {!test.submission.task1_completed
+                                ? 'Task 1'
+                                : 'Task 2'}
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={() => handleStartTest(test.id)}
+                          variant="primary"
+                          size="sm"
+                          className="w-full group-hover:shadow-md"
+                          endIcon={
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          }
+                        >
+                          Start Test
+                        </Button>
+                      )}
+                    </div>
 
-                  {/* Subtle Hover Border */}
-                  <div
-                    className={`pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ${
-                      locked
-                        ? 'ring-amber-500/0'
-                        : hasSubmission
-                          ? 'ring-green-500/0 group-hover:ring-green-500/30'
-                          : 'ring-primary/0 group-hover:ring-primary/30'
-                    } transition-all duration-300`}
-                  />
-                </div>
-              );
-            })}
+                    {/* Subtle Hover Border */}
+                    <div
+                      className={`pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ${
+                        locked
+                          ? 'ring-amber-500/0'
+                          : hasSubmission
+                            ? 'ring-green-500/0 group-hover:ring-green-500/30'
+                            : 'ring-primary/0 group-hover:ring-primary/30'
+                      } transition-all duration-300`}
+                    />
+                  </div>
+                );
+              })}
           </div>
         </div>
       )}
