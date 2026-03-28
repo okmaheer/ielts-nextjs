@@ -15,6 +15,7 @@ export interface User {
   profilePicture?: string;
   roles: string[];
   isAdmin: boolean;
+  isUserPaid: boolean;
 }
 
 export interface AuthResponse {

@@ -203,7 +203,7 @@ export default function TestList({ category }: TestListProps) {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {tests.map(test => {
               const hasSubmission =
                 test.submission !== null && test.submission !== undefined;
@@ -228,9 +228,7 @@ export default function TestList({ category }: TestListProps) {
                 >
                   {/* Premium Badge */}
                   {paid && (
-                    <div
-                      className={`absolute top-4 ${hasSubmission ? 'right-28' : 'right-4'} z-10`}
-                    >
+                    <div className="absolute top-4 right-4 z-10">
                       <div className="flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 shadow-lg">
                         <Crown className="h-3 w-3 text-white" />
                         <span className="text-xs font-bold text-white">
@@ -253,7 +251,9 @@ export default function TestList({ category }: TestListProps) {
 
                   {/* Completed/Partial Badge */}
                   {hasSubmission && (
-                    <div className="absolute top-4 right-4 z-10">
+                    <div
+                      className={`absolute ${paid ? 'top-14' : 'top-4'} right-4 z-10`}
+                    >
                       <div
                         className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 shadow-lg ${isFullyCompleted ? 'bg-green-600' : 'bg-orange-500'}`}
                       >
@@ -267,17 +267,17 @@ export default function TestList({ category }: TestListProps) {
 
                   {/* Card Header with Gradient Accent */}
                   <div
-                    className={`relative ${hasSubmission ? 'bg-gradient-to-br from-green-100/50 via-green-50/30 to-transparent dark:from-green-900/20 dark:via-green-900/10' : 'bg-gradient-to-br from-primary/5 via-primary/3 to-transparent'} p-6 pb-4`}
+                    className={`relative ${hasSubmission ? 'bg-gradient-to-br from-green-100/50 via-green-50/30 to-transparent dark:from-green-900/20 dark:via-green-900/10' : 'bg-gradient-to-br from-primary/5 via-primary/3 to-transparent'} p-5 pb-3`}
                   >
                     <div
-                      className={`mb-4 inline-flex rounded-xl ${hasSubmission ? 'bg-green-100 dark:bg-green-900/30' : 'bg-white dark:bg-gray-900'} p-3 shadow-sm`}
+                      className={`mb-3 inline-flex rounded-xl ${hasSubmission ? 'bg-green-100 dark:bg-green-900/30' : 'bg-white dark:bg-gray-900'} p-3 shadow-sm`}
                     >
                       <FileText
-                        className={`h-6 w-6 ${hasSubmission ? 'text-green-600 dark:text-green-400' : 'text-primary'}`}
+                        className={`h-5 w-5 ${hasSubmission ? 'text-green-600 dark:text-green-400' : 'text-primary'}`}
                       />
                     </div>
 
-                    <h3 className="mb-2 font-bold text-gray-900 text-lg leading-tight dark:text-white">
+                    <h3 className="mb-2 font-bold text-gray-900 text-base leading-tight dark:text-white">
                       {test.name}
                     </h3>
 
@@ -293,7 +293,7 @@ export default function TestList({ category }: TestListProps) {
 
                   {/* Test Info Section */}
                   <div
-                    className={`flex-1 border-t ${hasSubmission ? 'border-green-100 bg-green-50/30 dark:border-green-900/20 dark:bg-green-900/5' : 'border-gray-100 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/40'} px-6 py-4`}
+                    className={`flex-1 border-t ${hasSubmission ? 'border-green-100 bg-green-50/30 dark:border-green-900/20 dark:bg-green-900/5' : 'border-gray-100 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/40'} px-5 py-3`}
                   >
                     {hasSubmission && test.submission ? (
                       <div className="space-y-3">
@@ -352,13 +352,13 @@ export default function TestList({ category }: TestListProps) {
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                             60 minutes
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Target className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                             2 Writing Tasks
                           </span>
                         </div>
@@ -376,7 +376,7 @@ export default function TestList({ category }: TestListProps) {
 
                   {/* Action Button */}
                   <div
-                    className={`border-t ${hasSubmission ? 'border-green-100 dark:border-green-900/20' : 'border-gray-100 dark:border-gray-800'} p-4`}
+                    className={`border-t ${hasSubmission ? 'border-green-100 dark:border-green-900/20' : 'border-gray-100 dark:border-gray-800'} p-3`}
                   >
                     {locked ? (
                       <Button

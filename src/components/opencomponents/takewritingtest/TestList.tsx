@@ -194,7 +194,7 @@ export default function TestList({ category }: TestListProps) {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {tests.map(test => {
               const isPaid = test.type === 2;
 
@@ -208,10 +208,10 @@ export default function TestList({ category }: TestListProps) {
                   }`}
                 >
                   {/* Card Header with Gradient Accent */}
-                  <div className="relative bg-gradient-to-br from-primary/5 via-primary/3 to-transparent p-6 pb-4">
+                  <div className="relative bg-gradient-to-br from-primary/5 via-primary/3 to-transparent p-5 pb-3">
                     <div className="flex items-start justify-between mb-4">
                       <div className="inline-flex rounded-xl bg-white p-3 shadow-sm dark:bg-gray-900">
-                        <FileText className="h-6 w-6 text-primary" />
+                        <FileText className="h-5 w-5 text-primary" />
                       </div>
                       {isPaid ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
@@ -225,7 +225,7 @@ export default function TestList({ category }: TestListProps) {
                       )}
                     </div>
 
-                    <h3 className="mb-2 font-bold text-gray-900 text-lg leading-tight dark:text-white">
+                    <h3 className="mb-2 font-bold text-gray-900 text-base leading-tight dark:text-white">
                       {test.name}
                     </h3>
 
@@ -238,12 +238,12 @@ export default function TestList({ category }: TestListProps) {
                   </div>
 
                   {/* Test Info Section */}
-                  <div className="flex-1 border-t border-gray-100 bg-gray-50/50 px-6 py-4 dark:border-gray-800 dark:bg-gray-900/40">
+                  <div className="flex-1 border-t border-gray-100 bg-gray-50/50 px-5 py-3 dark:border-gray-800 dark:bg-gray-900/40">
                     <div className="space-y-3">
                       {/* Duration */}
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                           60 minutes
                         </span>
                       </div>
@@ -251,7 +251,7 @@ export default function TestList({ category }: TestListProps) {
                       {/* Tasks */}
                       <div className="flex items-center gap-2">
                         <Target className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                           2 Writing Tasks
                         </span>
                       </div>
@@ -270,7 +270,7 @@ export default function TestList({ category }: TestListProps) {
 
                   {/* Submission Scores or Action Button */}
                   {isPaid ? (
-                    <div className="border-t border-gray-100 p-4 dark:border-gray-800">
+                    <div className="border-t border-gray-100 p-3 dark:border-gray-800">
                       <Button
                         onClick={() => router.push('/signin')}
                         variant="outline"
@@ -282,7 +282,7 @@ export default function TestList({ category }: TestListProps) {
                       </Button>
                     </div>
                   ) : test.submission ? (
-                    <div className="border-t border-gray-100 p-4 dark:border-gray-800">
+                    <div className="border-t border-gray-100 p-3 dark:border-gray-800">
                       <div className="space-y-3">
                         <div className="flex items-center justify-between text-sm">
                           <span className="font-medium text-gray-600 dark:text-gray-400">
@@ -357,7 +357,7 @@ export default function TestList({ category }: TestListProps) {
                       </div>
                     </div>
                   ) : (
-                    <div className="border-t border-gray-100 p-4 dark:border-gray-800">
+                    <div className="border-t border-gray-100 p-3 dark:border-gray-800">
                       <Button
                         onClick={() => handleStartTest(test.id, test.name)}
                         variant="primary"
