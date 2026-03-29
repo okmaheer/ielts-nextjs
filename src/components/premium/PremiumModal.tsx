@@ -95,6 +95,11 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                 )}
                 <li className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                   <CheckCircle className="h-4 w-4 flex-shrink-0 text-green-500" />
+                  30 Listening and Reading Mock Tests
+                </li>
+
+                <li className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                  <CheckCircle className="h-4 w-4 flex-shrink-0 text-green-500" />
                   AI-powered evaluation for all tests
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">

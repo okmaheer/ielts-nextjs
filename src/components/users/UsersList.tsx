@@ -193,6 +193,18 @@ export default function UsersList() {
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
+                  User Type
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Auth Method
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
                   Status
                 </TableCell>
                 <TableCell
@@ -208,7 +220,7 @@ export default function UsersList() {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
+                  <TableCell colSpan={7} className="text-center py-8">
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
                     </div>
@@ -217,7 +229,7 @@ export default function UsersList() {
               ) : users.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={7}
                     className="text-center py-8 text-gray-500"
                   >
                     No users found
@@ -236,6 +248,32 @@ export default function UsersList() {
                     </TableCell>
                     <TableCell className="px-5 py-4 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                       {user.country}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start">
+                      <Badge
+                        size="sm"
+                        color={user.isUserPaid ? 'success' : 'warning'}
+                      >
+                        {user.isUserPaid ? 'Premium' : 'Free'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-start">
+                      <Badge
+                        size="sm"
+                        color={
+                          user.authProvider === 'google'
+                            ? 'info'
+                            : user.authProvider === 'facebook'
+                              ? 'info'
+                              : 'primary'
+                        }
+                      >
+                        {user.authProvider === 'google'
+                          ? 'Google'
+                          : user.authProvider === 'facebook'
+                            ? 'Facebook'
+                            : 'Password'}
+                      </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start">
                       <Badge

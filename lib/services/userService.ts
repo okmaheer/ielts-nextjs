@@ -9,6 +9,8 @@ export interface User {
   country: string;
   duration?: string;
   status: number | string;
+  isUserPaid?: boolean;
+  authProvider?: string;
   created_at?: Date;
   updated_at?: Date;
 }
