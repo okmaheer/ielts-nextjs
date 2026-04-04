@@ -29,7 +29,7 @@ export default function AdminReviewDetails() {
     {}
   );
   const [adminNotes, setAdminNotes] = useState('');
-  const [reviewStatus, setReviewStatus] = useState<string>('in_progress');
+  const [reviewStatus, setReviewStatus] = useState<string>('completed');
 
   useEffect(() => {
     fetchRequestDetails();
@@ -42,7 +42,10 @@ export default function AdminReviewDetails() {
       const data = await adminExpertReviewService.getRequestDetails(requestId);
       setRequest(data);
       setAdminNotes(data.admin_notes || '');
-      setReviewStatus(data.status);
+      // Only restore status if it was previously completed/rejected (re-editing a finished review)
+      if (data.status === 'completed' || data.status === 'rejected') {
+        setReviewStatus(data.status);
+      }
 
       // If expert feedback exists, parse and populate form
       if (data.submission.expert_feedback) {
@@ -143,28 +146,13 @@ export default function AdminReviewDetails() {
         improvements: [''],
       };
 
-      const updated = {
+      return {
         ...prev,
         [taskKey]: {
           ...taskData,
           [criterion]: value,
         },
       };
-
-      // Auto-calculate overall band for task
-      const task = updated[taskKey]!;
-      const criteriaKey = taskNum === 1 ? 'task_achievement' : 'task_response';
-      const scores = [
-        task[criteriaKey as keyof typeof task] as number,
-        task.coherence_cohesion,
-        task.lexical_resource,
-        task.grammatical_accuracy,
-      ];
-
-      const avg = scores.reduce((sum, score) => sum + score, 0) / 4;
-      updated[taskKey]!.overall_band = Math.round(avg * 2) / 2;
-
-      return updated;
     });
   };
 
@@ -246,7 +234,7 @@ export default function AdminReviewDetails() {
         expert_evaluation: expertEvaluation,
         expert_overall_score: overallScore,
         admin_notes: adminNotes,
-        status: reviewStatus,
+        status: reviewStatus, // only 'completed' or 'rejected'
       });
 
       setSaveMessage({
@@ -459,15 +447,13 @@ export default function AdminReviewDetails() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Review Status
+                Review Outcome
               </label>
               <select
                 value={reviewStatus}
                 onChange={e => setReviewStatus(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#06BBCC] focus:border-transparent"
               >
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
                 <option value="completed">Completed</option>
                 <option value="rejected">Rejected</option>
               </select>
@@ -688,16 +674,13 @@ function TaskReviewForm({
             onChange={value => onScoreChange('grammatical_accuracy', value)}
           />
 
-          {/* Overall Band (Auto-calculated) */}
+          {/* Overall Band (Manual) */}
           <div className="pt-4 border-t border-gray-200">
-            <p className="text-sm font-medium text-gray-700 mb-2">
-              Overall Band Score (Auto-calculated)
-            </p>
-            <div
-              className={`text-2xl font-bold ${getBandColor(expertEvaluation?.overall_band || 0)}`}
-            >
-              {expertEvaluation?.overall_band?.toFixed(1) || '0.0'}
-            </div>
+            <ScoreInput
+              label="Overall Band Score"
+              value={expertEvaluation?.overall_band || 0}
+              onChange={value => onScoreChange('overall_band', value)}
+            />
           </div>
 
           {/* Feedback */}
@@ -756,10 +739,11 @@ function TaskReviewForm({
   );
 }
 
-// Score Input Component (Display Only)
+// Score Input Component
 function ScoreInput({
   label,
   value,
+  onChange,
 }: {
   label: string;
   value: number;
@@ -772,25 +756,35 @@ function ScoreInput({
     return 'bg-red-500';
   };
 
+  const bands = [
+    0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9,
+  ];
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
         {label}
       </label>
-      <div className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed">
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-gray-900 font-semibold min-w-[80px]">
-            {value === 0 ? 'Not Scored' : `Band ${value}`}
-          </span>
-          {value > 0 && (
-            <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
-              <div
-                className={`${getBandColor(value)} h-3 rounded-full transition-all duration-300`}
-                style={{ width: `${(value / 9) * 100}%` }}
-              ></div>
-            </div>
-          )}
-        </div>
+      <div className="flex items-center gap-3">
+        <select
+          value={value}
+          onChange={e => onChange(parseFloat(e.target.value))}
+          className="w-36 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#06BBCC] focus:border-transparent"
+        >
+          {bands.map(b => (
+            <option key={b} value={b}>
+              {b === 0 ? 'Not Scored' : `Band ${b}`}
+            </option>
+          ))}
+        </select>
+        {value > 0 && (
+          <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div
+              className={`${getBandColor(value)} h-3 rounded-full transition-all duration-300`}
+              style={{ width: `${(value / 9) * 100}%` }}
+            ></div>
+          </div>
+        )}
       </div>
     </div>
   );
