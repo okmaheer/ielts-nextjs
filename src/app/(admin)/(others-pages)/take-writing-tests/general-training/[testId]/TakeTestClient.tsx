@@ -189,6 +189,28 @@ export default function TakeTestClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testData, isLoading, isAuthenticated, timeRemaining]);
 
+  useEffect(() => {
+    const prevent = (e: ClipboardEvent) => e.preventDefault();
+    const preventKeys = (e: KeyboardEvent) => {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        ['c', 'v', 'x'].includes(e.key.toLowerCase())
+      ) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('copy', prevent);
+    document.addEventListener('cut', prevent);
+    document.addEventListener('paste', prevent);
+    document.addEventListener('keydown', preventKeys);
+    return () => {
+      document.removeEventListener('copy', prevent);
+      document.removeEventListener('cut', prevent);
+      document.removeEventListener('paste', prevent);
+      document.removeEventListener('keydown', preventKeys);
+    };
+  }, []);
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
