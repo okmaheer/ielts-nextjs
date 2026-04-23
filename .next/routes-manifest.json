@@ -1,0 +1,272 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "dynamicRoutes": [
+    {
+      "page": "/admin/expert-reviews/[requestId]",
+      "regex": "^/admin/expert\\-reviews/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPrequestId": "nxtPrequestId"
+      },
+      "namedRegex": "^/admin/expert\\-reviews/(?<nxtPrequestId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/academic/[testId]",
+      "regex": "^/take\\-writing\\-tests/academic/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/academic/(?<nxtPtestId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/academic/[testId]/instructions",
+      "regex": "^/take\\-writing\\-tests/academic/([^/]+?)/instructions(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/academic/(?<nxtPtestId>[^/]+?)/instructions(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/general-training/[testId]",
+      "regex": "^/take\\-writing\\-tests/general\\-training/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/general\\-training/(?<nxtPtestId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/general-training/[testId]/instructions",
+      "regex": "^/take\\-writing\\-tests/general\\-training/([^/]+?)/instructions(?:/)?$",
+      "routeKeys": {
+        "nxtPtestId": "nxtPtestId"
+      },
+      "namedRegex": "^/take\\-writing\\-tests/general\\-training/(?<nxtPtestId>[^/]+?)/instructions(?:/)?$"
+    },
+    {
+      "page": "/writing-test-results/[submissionId]",
+      "regex": "^/writing\\-test\\-results/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPsubmissionId": "nxtPsubmissionId"
+      },
+      "namedRegex": "^/writing\\-test\\-results/(?<nxtPsubmissionId>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin/expert-reviews",
+      "regex": "^/admin/expert\\-reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/expert\\-reviews(?:/)?$"
+    },
+    {
+      "page": "/alerts",
+      "regex": "^/alerts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/alerts(?:/)?$"
+    },
+    {
+      "page": "/auth/callback",
+      "regex": "^/auth/callback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/callback(?:/)?$"
+    },
+    {
+      "page": "/auth/login",
+      "regex": "^/auth/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/login(?:/)?$"
+    },
+    {
+      "page": "/avatars",
+      "regex": "^/avatars(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/avatars(?:/)?$"
+    },
+    {
+      "page": "/badge",
+      "regex": "^/badge(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/badge(?:/)?$"
+    },
+    {
+      "page": "/bar-chart",
+      "regex": "^/bar\\-chart(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/bar\\-chart(?:/)?$"
+    },
+    {
+      "page": "/basic-tables",
+      "regex": "^/basic\\-tables(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/basic\\-tables(?:/)?$"
+    },
+    {
+      "page": "/blank",
+      "regex": "^/blank(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/blank(?:/)?$"
+    },
+    {
+      "page": "/buttons",
+      "regex": "^/buttons(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/buttons(?:/)?$"
+    },
+    {
+      "page": "/calendar",
+      "regex": "^/calendar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/calendar(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/error-404",
+      "regex": "^/error\\-404(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/error\\-404(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/form-elements",
+      "regex": "^/form\\-elements(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/form\\-elements(?:/)?$"
+    },
+    {
+      "page": "/images",
+      "regex": "^/images(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/images(?:/)?$"
+    },
+    {
+      "page": "/line-chart",
+      "regex": "^/line\\-chart(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/line\\-chart(?:/)?$"
+    },
+    {
+      "page": "/modals",
+      "regex": "^/modals(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/modals(?:/)?$"
+    },
+    {
+      "page": "/my-expert-reviews",
+      "regex": "^/my\\-expert\\-reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-expert\\-reviews(?:/)?$"
+    },
+    {
+      "page": "/my-test-results",
+      "regex": "^/my\\-test\\-results(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-test\\-results(?:/)?$"
+    },
+    {
+      "page": "/payment/callback",
+      "regex": "^/payment/callback(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/payment/callback(?:/)?$"
+    },
+    {
+      "page": "/profile",
+      "regex": "^/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/profile(?:/)?$"
+    },
+    {
+      "page": "/signin",
+      "regex": "^/signin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/signin(?:/)?$"
+    },
+    {
+      "page": "/signup",
+      "regex": "^/signup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/signup(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/academic",
+      "regex": "^/take\\-writing\\-tests/academic(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/take\\-writing\\-tests/academic(?:/)?$"
+    },
+    {
+      "page": "/take-writing-tests/general-training",
+      "regex": "^/take\\-writing\\-tests/general\\-training(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/take\\-writing\\-tests/general\\-training(?:/)?$"
+    },
+    {
+      "page": "/users",
+      "regex": "^/users(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/users(?:/)?$"
+    },
+    {
+      "page": "/videos",
+      "regex": "^/videos(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/videos(?:/)?$"
+    },
+    {
+      "page": "/writing-test-instructions",
+      "regex": "^/writing\\-test\\-instructions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/writing\\-test\\-instructions(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "RSC",
+    "varyHeader": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch",
+    "prefetchHeader": "Next-Router-Prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "Next-Router-Segment-Prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  },
+  "rewrites": []
+}
