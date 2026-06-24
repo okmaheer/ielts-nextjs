@@ -1,4 +1,4 @@
-// File: /Users/maheerakbar/projects/ielts-nextjs/frontend/src/app/(full-width-pages)/writing-test-instructions/page.tsx
+// File: /Users/maheerakbar/projects/ielts-websites/ielts-nextjs/frontend/src/app/(full-width-pages)/writing-test-instructions/page.tsx
 import * as entry from '../../../../../src/app/(full-width-pages)/writing-test-instructions/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

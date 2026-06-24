@@ -1,4 +1,4 @@
-// File: /Users/maheerakbar/projects/ielts-nextjs/frontend/src/app/(admin)/(ui-elements)/buttons/page.tsx
+// File: /Users/maheerakbar/projects/ielts-websites/ielts-nextjs/frontend/src/app/(admin)/(ui-elements)/buttons/page.tsx
 import * as entry from '../../../../../../src/app/(admin)/(ui-elements)/buttons/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
