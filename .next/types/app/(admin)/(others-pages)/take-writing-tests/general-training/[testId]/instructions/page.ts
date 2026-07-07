@@ -1,4 +1,4 @@
-// File: /Users/maheerakbar/projects/ielts-websites/ielts-nextjs/frontend/src/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/instructions/page.tsx
+// File: /Users/maheerakbar/projects/writing/ielts-nextjs/frontend/src/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/instructions/page.tsx
 import * as entry from '../../../../../../../../../src/app/(admin)/(others-pages)/take-writing-tests/general-training/[testId]/instructions/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

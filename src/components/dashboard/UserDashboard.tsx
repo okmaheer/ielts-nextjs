@@ -128,6 +128,28 @@ export default function UserDashboard() {
         </button>
       )}
 
+      {/* Premium Login Setup Banner — premium tests require an email+password
+          login, distinct from this Google/Facebook session */}
+      {user && user.loginMethod !== 'email' && (
+        <button
+          onClick={() => router.push('/premium-login')}
+          className="w-full rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] p-4 shadow-sm transition-all hover:shadow-md"
+        >
+          <div className="flex items-center justify-between">
+            <div className="text-left">
+              <p className="font-bold text-gray-800 dark:text-white">
+                Taking premium tests?
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Premium tests need a separate email &amp; password login. Set
+                one up here.
+              </p>
+            </div>
+            <ArrowRight className="h-5 w-5 text-gray-400" />
+          </div>
+        </button>
+      )}
+
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard

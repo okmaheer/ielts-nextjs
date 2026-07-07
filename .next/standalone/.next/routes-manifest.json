@@ -203,6 +203,12 @@
       "namedRegex": "^/payment/callback(?:/)?$"
     },
     {
+      "page": "/premium-login",
+      "regex": "^/premium\\-login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/premium\\-login(?:/)?$"
+    },
+    {
       "page": "/profile",
       "regex": "^/profile(?:/)?$",
       "routeKeys": {},

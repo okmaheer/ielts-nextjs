@@ -112,7 +112,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/Users/maheerakbar/projects/ielts-websites/ielts-nextjs/frontend",
+    "outputFileTracingRoot": "/Users/maheerakbar/projects/writing/ielts-nextjs/frontend",
     "allowedDevOrigins": [],
     "experimental": {
       "allowedDevOrigins": [],
@@ -192,7 +192,7 @@
       "forceSwcTransforms": false,
       "largePageDataBytes": 128000,
       "turbo": {
-        "root": "/Users/maheerakbar/projects/ielts-websites/ielts-nextjs/frontend"
+        "root": "/Users/maheerakbar/projects/writing/ielts-nextjs/frontend"
       },
       "typedRoutes": false,
       "typedEnv": false,
@@ -298,7 +298,7 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.ts"
   },
-  "appDir": "/Users/maheerakbar/projects/ielts-websites/ielts-nextjs/frontend",
+  "appDir": "/Users/maheerakbar/projects/writing/ielts-nextjs/frontend",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",

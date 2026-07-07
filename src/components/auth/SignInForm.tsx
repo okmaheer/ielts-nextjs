@@ -1,9 +1,20 @@
 'use client';
 import { ChevronLeftIcon } from '@/icons';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
+import api from '../../../lib/api';
 
 export default function SignInForm() {
+  const router = useRouter();
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
+
   const handleGoogleSignIn = () => {
     // Redirect to backend Google OAuth endpoint
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
@@ -12,6 +23,33 @@ export default function SignInForm() {
   const handleFacebookSignIn = () => {
     // Redirect to backend Facebook OAuth endpoint
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/facebook`;
+  };
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError('');
+
+    if (!email || !password) {
+      setFormError('Please enter both email and password.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { token, user } = response.data.data;
+      login(token, user);
+      router.push('/dashboard');
+    } catch (err) {
+      const message = axios.isAxiosError(err)
+        ? err.response?.data?.message
+        : undefined;
+      setFormError(
+        message || 'Could not sign in. Please check your email and password.'
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -114,6 +152,50 @@ export default function SignInForm() {
               Sign in with Facebook
             </button>
           </div>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800" />
+            <span className="text-xs text-gray-400 uppercase">
+              Premium members
+            </span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800" />
+          </div>
+
+          {/* Email & Password Sign In (required for premium test access) */}
+          <form onSubmit={handleEmailSignIn} className="space-y-3">
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent px-4 py-3 text-sm"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent px-4 py-3 text-sm"
+            />
+            {formError && (
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {formError}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full py-3 text-sm font-medium text-white rounded-xl disabled:opacity-60"
+              style={{ backgroundColor: '#111827' }}
+            >
+              {submitting ? 'Signing in...' : 'Sign in with email & password'}
+            </button>
+            <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+              This login is only needed for premium test access. Free users
+              should sign in with Google above.
+            </p>
+          </form>
 
           {/* Simple Info Note */}
           <div className="mt-6">

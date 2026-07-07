@@ -14,6 +14,7 @@ type User = {
   name: string;
   email: string;
   authProvider: string;
+  loginMethod?: string;
   profilePicture?: string;
   roles: string[];
   isAdmin: boolean;
